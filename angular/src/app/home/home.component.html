@@ -147,10 +147,11 @@
                         <table *ngIf="selectedSection==='doctors'" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Specialization</th>
-                                    <th>Phone</th>
+                                    <th>Doctor Code</th>
+                                    <th>Doctor Name</th>
+                                    <th>Doctor Specialization</th>
+                                    <th>Phone Number</th>
+                                    <th>Available</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -159,6 +160,12 @@
                                     <td>{{ d.fullName }}</td>
                                     <td>{{ d.specializationName }}</td>
                                     <td>{{ d.phoneNumber }}</td>
+                                    <td>
+                                        <span [ngClass]="d.isAvailble ? 'text-success' : 'text-danger'">
+                                            {{ d.isAvailble ? ('Yes' | localize) : ('No' | localize) }}
+                                        </span>
+                                    </td>
+
                                 </tr>
                             </tbody>
                         </table>
@@ -167,11 +174,11 @@
                         <table *ngIf="selectedSection==='patients'" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Photo</th>
-                                    <th>Name</th>
-                                    <th>Gender</th>
-                                    <th>Phone</th>
+                                    <th>Patient Code</th>
+                                    <th>Patient Photo</th>
+                                    <th>Patient Name</th>
+                                    <th>Patient Gender</th>
+                                    <th> Phone Number</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -199,8 +206,8 @@
                         <table *ngIf="selectedSection==='admissions'" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Patient</th>
-                                    <th>Doctor</th>
+                                    <th>Patient Name</th>
+                                    <th>Doctor Name</th>
                                     <th>Diagnosis</th>
                                     <th>Status</th>
                                 </tr>
@@ -220,7 +227,7 @@
                             <thead>
                                 <tr>
                                     <th>Bed Number</th>
-                                    <th>Room</th>
+                                    <th>Room Number</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -239,7 +246,7 @@
                             <thead>
                                 <tr>
                                     <th>Bed Number</th>
-                                    <th>Room</th>
+                                    <th>Room Number</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -285,7 +292,7 @@
                             <thead>
                                 <tr>
                                     <th>Bed Number</th>
-                                    <th>Room</th>
+                                    <th>Room Number</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>

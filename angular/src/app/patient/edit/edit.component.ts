@@ -34,7 +34,7 @@ export class EditPatientDialogComponent extends AppComponentBase implements OnIn
 
   @Output() onSave = new EventEmitter<any>();
 
-  genderOptions: string[] = [];
+  genderOptions: string[] = ['Male', 'Female', 'Other'];
 
   constructor(
     injector: Injector,
@@ -49,8 +49,8 @@ export class EditPatientDialogComponent extends AppComponentBase implements OnIn
     console.log("ImageIds from backend:", this.patient.imageIds);
 
 
-    this.genderOptions = Object.keys(this.l('PatientEnum'))
-      .filter(k => isNaN(Number(k)));
+    // this.genderOptions = Object.keys(this.l('PatientEnum'))
+    //   .filter(k => isNaN(Number(k)));
 
     this.patientImages = [];
     this.removedPhotoIds = [];
