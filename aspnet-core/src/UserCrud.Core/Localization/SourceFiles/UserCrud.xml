@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
   <texts>
+	 <text name="SearchPatientAdmission" value="Search with patient name" />
+	  <text name="SearchRooms" value="Search by room number, room type" />
+	  <text name="SearchBeds" value="Search by bed number" />
+	<text name="SearchPatient" value="Search with patient name or patient code" />
+	<text name="SearchDoctor" value="Search with doctor name or patient code" />
     <text name="HomePage" value="Home page" />
     <text name="About" value="About" />
     <text name="WelcomeMessage" value="Welcome to UserCrud!" />

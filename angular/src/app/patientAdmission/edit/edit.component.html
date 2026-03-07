@@ -1,10 +1,6 @@
-<form class="form-horizontal"
-      autocomplete="off"
-      #editPatientAdmissionForm="ngForm"
-      (ngSubmit)="save()">
+<form class="form-horizontal" autocomplete="off" #editPatientAdmissionForm="ngForm" (ngSubmit)="save()">
 
-  <abp-modal-header
-    [title]="admission.id ? ('EditPatientAdmission' | localize) : ('NewPatientAdmission' | localize)"
+  <abp-modal-header [title]="admission.id ? ('EditPatientAdmission' | localize) : ('NewPatientAdmission' | localize)"
     (onCloseClick)="bsModalRef.hide()">
   </abp-modal-header>
 
@@ -14,17 +10,9 @@
     <div class="form-group row required">
       <label class="col-md-3 col-form-label">{{ 'AdmissionDate' | localize }}</label>
       <div class="col-md-9">
-        <input type="date"
-               class="form-control"
-               name="admissionDate"
-               required
-               [(ngModel)]="admission.admissionDate"
-               [ngModelOptions]="{standalone: true}"
-               #admissionDateModel="ngModel"
-               #admissionDateEl />
-        <abp-validation-summary
-          [control]="admissionDateModel"
-          [controlEl]="admissionDateEl">
+        <input type="date" class="form-control" name="admissionDate" required [(ngModel)]="admission.admissionDate"
+          [ngModelOptions]="{standalone: true}" #admissionDateModel="ngModel" #admissionDateEl />
+        <abp-validation-summary [control]="admissionDateModel" [controlEl]="admissionDateEl">
         </abp-validation-summary>
       </div>
     </div>
@@ -33,11 +21,8 @@
     <div class="form-group row">
       <label class="col-md-3 col-form-label">{{ 'DischargeDate' | localize }}</label>
       <div class="col-md-9">
-        <input type="date"
-               class="form-control"
-               name="dischargeDate"
-               [(ngModel)]="admission.dischargeDate"
-               [ngModelOptions]="{standalone: true}" />
+        <input type="date" class="form-control" name="dischargeDate" [(ngModel)]="admission.dischargeDate"
+          [ngModelOptions]="{standalone: true}" />
       </div>
     </div>
 
@@ -45,19 +30,10 @@
     <div class="form-group row required">
       <label class="col-md-3 col-form-label">{{ 'Diagnosis' | localize }}</label>
       <div class="col-md-9">
-        <input type="text"
-               class="form-control"
-               name="diagnosis"
-               required
-               minlength="2"
-               maxlength="500"
-               [(ngModel)]="admission.diagnosis"
-               [ngModelOptions]="{standalone: true}"
-               #diagnosisModel="ngModel"
-               #diagnosisEl />
-        <abp-validation-summary
-          [control]="diagnosisModel"
-          [controlEl]="diagnosisEl">
+        <input type="text" class="form-control" name="diagnosis" required minlength="2" maxlength="500"
+          [(ngModel)]="admission.diagnosis" [ngModelOptions]="{standalone: true}" #diagnosisModel="ngModel"
+          #diagnosisEl />
+        <abp-validation-summary [control]="diagnosisModel" [controlEl]="diagnosisEl">
         </abp-validation-summary>
       </div>
     </div>
@@ -66,11 +42,8 @@
     <div class="form-group row required">
       <label class="col-md-3 col-form-label">{{ 'Status' | localize }}</label>
       <div class="col-md-9">
-        <select class="form-control"
-                name="status"
-                required
-                [(ngModel)]="admission.status"
-                [ngModelOptions]="{standalone: true}">
+        <select class="form-control" name="status" required [(ngModel)]="admission.status"
+          [ngModelOptions]="{standalone: true}">
           <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
         </select>
       </div>
@@ -80,12 +53,8 @@
     <div class="form-group row required">
       <label class="col-md-3 col-form-label">{{ 'Patient' | localize }}</label>
       <div class="col-md-9">
-        <select class="form-control"
-                name="patient"
-                required
-                [(ngModel)]="admission.patientId"
-                [ngModelOptions]="{standalone: true}"
-                #patientModel="ngModel" #patientEl>
+        <select class="form-control" name="patient" required [(ngModel)]="admission.patientId"
+          [ngModelOptions]="{standalone: true}" #patientModel="ngModel" #patientEl>
           <option *ngFor="let p of patients" [value]="p.id">
             {{ p.firstName }} {{ p.lastName }}
           </option>
@@ -98,12 +67,8 @@
     <div class="form-group row required">
       <label class="col-md-3 col-form-label">{{ 'Doctor' | localize }}</label>
       <div class="col-md-9">
-        <select class="form-control"
-                name="doctor"
-                required
-                [(ngModel)]="admission.doctorId"
-                [ngModelOptions]="{standalone: true}"
-                #doctorModel="ngModel" #doctorEl>
+        <select class="form-control" name="doctor" required [(ngModel)]="admission.doctorId"
+          [ngModelOptions]="{standalone: true}" #doctorModel="ngModel" #doctorEl>
           <option *ngFor="let d of doctors" [value]="d.id">
             {{ d.fullName }}
           </option>
@@ -112,29 +77,65 @@
       </div>
     </div>
 
+    <!-- Room -->
+    <div class="form-group row required">
+      <label class="col-md-3 col-form-label">{{ 'Room' | localize }}</label>
+
+      <div class="col-md-9">
+        <select class="form-control" name="room" required [(ngModel)]="selectedRoomId"
+          [ngModelOptions]="{standalone: true}" (change)="onRoomChange(selectedRoomId)">
+          <option *ngFor="let r of rooms" [value]="r.id">
+            {{ r.roomNumber }}
+          </option>
+        </select>
+      </div>
+    </div>
+
     <!-- Bed -->
     <div class="form-group row required">
-      <label class="col-md-3 col-form-label">{{ 'Bed' | localize }}</label>
+
+      <label class="col-md-3 col-form-label">
+        {{ 'AvailableBeds' | localize }}
+      </label>
+
       <div class="col-md-9">
-        <select class="form-control"
-                name="bed"
-                required
-                [(ngModel)]="admission.bedId"
-                [ngModelOptions]="{standalone: true}"
-                #bedModel="ngModel" #bedEl>
+
+        <!-- Available bed numbers -->
+        <div *ngIf="beds.length > 0" class="mb-2 text-success">
+          <strong>{{ 'AvailableBeds' | localize }}:</strong>
+          <span *ngFor="let b of beds; let last = last">
+            {{ b.bedNumber }}<span *ngIf="!last">, </span>
+          </span>
+        </div>
+
+        <!-- No beds -->
+        <div *ngIf="beds.length === 0" class="text-danger mb-2">
+          {{ 'NoBedsAvailable' | localize }}
+        </div>
+
+        <!-- Dropdown -->
+        <select class="form-control" name="bed" required [(ngModel)]="admission.bedId" [disabled]="beds.length === 0"
+          [ngModelOptions]="{standalone: true}" #bedModel="ngModel" #bedEl>
+
+          <option value="" disabled>
+            {{ 'SelectBed' | localize }}
+          </option>
+
           <option *ngFor="let b of beds" [value]="b.id">
             {{ b.bedNumber }}
           </option>
+
         </select>
-        <abp-validation-summary [control]="bedModel" [controlEl]="bedEl"></abp-validation-summary>
+
+        <abp-validation-summary [control]="bedModel" [controlEl]="bedEl">
+        </abp-validation-summary>
+
       </div>
     </div>
 
   </div> <!-- modal-body -->
 
-  <abp-modal-footer
-    [cancelDisabled]="saving"
-    [saveDisabled]="!editPatientAdmissionForm.form.valid || saving"
+  <abp-modal-footer [cancelDisabled]="saving" [saveDisabled]="!editPatientAdmissionForm.form.valid || saving"
     (onCancelClick)="bsModalRef.hide()">
   </abp-modal-footer>
 

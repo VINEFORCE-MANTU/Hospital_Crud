@@ -37,8 +37,8 @@
                   type="text"
                   class="form-control"
                   [(ngModel)]="keyword"
-                  [placeholder]="'SearchWithThreeDot' | localize"
-                  (keyup.enter)="list()" />
+                  [placeholder]="'SearchDoctor' | localize"
+                 (keyup)="filterDoctors()"/>
               </div>
             </div>
           </div>

@@ -52,24 +52,37 @@ export class PatientAdmissionComponent
     super(injector, cd);
   }
 
-  list(event?: any): void {
-    if (this.primengTableHelper.shouldResetPaging(event)) {
-      this.paginator.changePage(0);
-      if (this.primengTableHelper.records?.length) {
-        return;
-      }
-    }
+ list(event?: any): void {
 
-    this.primengTableHelper.showLoadingIndicator();
+  this.primengTableHelper.showLoadingIndicator();
 
-    this._admissionService
-      .getAllPatientAdmissions()
-      .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
-      .subscribe(result => {
-        this.primengTableHelper.records = result;
-        this.cd.detectChanges();
-      });
+  this._admissionService
+    .getAllPatientAdmissions()
+    .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
+    .subscribe(result => {
+
+      this.patientAdmissions = result;
+      this.filterAdmissions();   // apply filter
+
+      this.cd.detectChanges();
+    });
+}
+
+filterAdmissions(): void {
+
+  if (!this.keyword) {
+    this.primengTableHelper.records = this.patientAdmissions;
+    return;
   }
+
+  const search = this.keyword.toLowerCase();
+
+  this.primengTableHelper.records = this.patientAdmissions.filter(admission =>
+      admission.patient?.firstName?.toLowerCase().includes(search) ||
+      admission.patient?.lastName?.toLowerCase().includes(search) 
+
+  );
+}
 
   createPatientAdmission(): void {
     const modalRef = this._modalService.show(
@@ -108,4 +121,5 @@ export class PatientAdmissionComponent
       }
     );
   }
+  
 }

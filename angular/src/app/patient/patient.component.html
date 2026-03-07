@@ -35,7 +35,7 @@
                   </button>
                 </div>
                 <input type="text" class="form-control" [(ngModel)]="keyword"
-                  [placeholder]="'SearchWithThreeDot' | localize" (keyup.enter)="list()" />
+                  [placeholder]="'SearchPatient' | localize" (keyup)="filterPatients()" />
               </div>
             </div>
           </div>

@@ -15,6 +15,7 @@ import {
   BedCrudServiceServiceProxy,
   PatientAdmissionCrudServiceServiceProxy,
   UpdatePatientAdmissionDto,
+  RoomDtoServiceServiceProxy,
 } from '../../../shared/service-proxies/service-proxies';
 
 import { AbpModalHeaderComponent } from '../../../shared/components/modal/abp-modal-header.component';
@@ -44,6 +45,8 @@ export class EditPatientAdmissionDialogComponent extends AppComponentBase implem
   patients: any[] = [];
   doctors: any[] = [];
   beds: any[] = [];
+  rooms: any[] = [];
+selectedRoomId: number | null = null;
 
   @Output() onSave = new EventEmitter<PatientAdmissionDto>();
 
@@ -53,47 +56,96 @@ export class EditPatientAdmissionDialogComponent extends AppComponentBase implem
     private _patientService: PatientCrudServiceServiceProxy,
     private _doctorService: DoctorCrudServiceServiceProxy,
     private _bedService: BedCrudServiceServiceProxy,
+    private _roomService:RoomDtoServiceServiceProxy,
     public bsModalRef: BsModalRef,
     private cd: ChangeDetectorRef
   ) {
     super(injector);
   }
 
-  ngOnInit(): void {
-    // If editing, bsModalRef.content.admission contains existing data
-    if (this.bsModalRef.content && this.bsModalRef.content.admission) {
-      this.admission = this.bsModalRef.content.admission;
+ngOnInit(): void {
+  this.loadDropdowns();
+}
 
-      // Convert string dates to Moment and format for input[type=date]
-      if (this.admission.admissionDate) {
-         this.admission.admissionDate = moment(this.admission.admissionDate);
-       }
-      if (this.admission.dischargeDate) {
-         this.admission.dischargeDate = moment(this.admission.dischargeDate);
-       }
+     
+loadDropdowns(): void {
+
+  forkJoin({
+    patients: this._patientService.getAllPatients(),
+    doctors: this._doctorService.getAllDoctors(),
+    beds: this._bedService.getAllBeds(),
+    rooms: this._roomService.getAllRooms()
+  })
+  .pipe(finalize(() => this.cd.detectChanges()))
+  .subscribe({
+    next: ({ patients, doctors, beds, rooms }) => {
+
+      this.patients = patients;
+      this.doctors = doctors;
+      this.rooms = rooms;
+
+      // Assign admission AFTER dropdowns load
+      if (this.bsModalRef.content?.admission) {
+
+        this.admission = this.bsModalRef.content.admission;
+
+        if (this.admission.admissionDate) {
+          this.admission.admissionDate = moment(this.admission.admissionDate);
+        }
+
+        if (this.admission.dischargeDate) {
+          this.admission.dischargeDate = moment(this.admission.dischargeDate);
+        }
+
+        // Find selected bed
+        if (this.admission.bedId) {
+
+          const selectedBed = beds.find(b => b.id === this.admission.bedId);
+
+          if (selectedBed) {
+
+            this.selectedRoomId = selectedBed.roomId;
+
+            // Filter beds for that room
+            this.beds = beds.filter(b =>
+              b.roomId === this.selectedRoomId &&
+              (!b.isOccupied || b.id === this.admission.bedId)
+            );
+
+          }
+        }
+      }
+
+    },
+    error: (err) => {
+      console.error('Failed to load dropdown data', err);
+      this.notify.error(this.l('FailedToLoadDropdownData'));
+    },
+  });
+
+}
+onRoomChange(roomId: number): void {
+
+  this.selectedRoomId = roomId;
+
+  if (!roomId) {
+    this.beds = [];
+    return;
+  }
+
+  this._bedService.getBedsByRoomId(roomId).subscribe({
+    next: (result) => {
+
+      this.beds = result;
+
+      this.cd.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error loading beds', err);
     }
+  });
 
-    this.loadDropdowns();
-  }
-
-  loadDropdowns(): void {
-    forkJoin({
-      patients: this._patientService.getAllPatients(),
-      doctors: this._doctorService.getAllDoctors(),
-      beds: this._bedService.getAllBeds(),
-    }).subscribe({
-      next: ({ patients, doctors, beds }) => {
-        this.patients = patients;
-        this.doctors = doctors;
-        this.beds = beds;
-
-        // Fix ExpressionChangedAfterItHasBeenCheckedError
-        this.cd.detectChanges();
-      },
-      error: (err) => console.error('Failed to load dropdown data', err),
-    });
-  }
-
+}
   save(): void {
   if (this.saving) return;
   this.saving = true;

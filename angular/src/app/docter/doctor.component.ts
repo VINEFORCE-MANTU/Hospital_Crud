@@ -48,25 +48,36 @@ export class DoctorComponent extends PagedListingComponentBase<DocterDto> {
     super(injector, cd);
   }
 
-  list(event?: LazyLoadEvent): void {
-    if (this.primengTableHelper.shouldResetPaging(event)) {
-      this.paginator.changePage(0);
+ list(event?: LazyLoadEvent): void {
 
-      if (this.primengTableHelper.records?.length) {
-        return;
-      }
-    }
+  this.primengTableHelper.showLoadingIndicator();
 
-    this.primengTableHelper.showLoadingIndicator();
+  this._doctorService
+    .getAllDoctors()
+    .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
+    .subscribe((result) => {
 
-    this._doctorService
-      .getAllDoctors()
-      .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
-      .subscribe((result) => {
-        this.primengTableHelper.records = result;
-        this.cd.detectChanges();
-      });
+      this.Doctors = result;
+      this.filterDoctors(); // apply filter
+
+      this.cd.detectChanges();
+    });
+}
+
+filterDoctors() {
+
+  if (!this.keyword) {
+    this.primengTableHelper.records = this.Doctors;
+    return;
   }
+
+  const search = this.keyword.toLowerCase();
+
+  this.primengTableHelper.records = this.Doctors.filter(doctor =>
+      doctor.fullName?.toLowerCase().includes(search) ||
+      doctor.docterCode?.toLowerCase().includes(search)
+  );
+}
 
   createDoctor(): void {
     const modalRef = this._modalService.show(CreateDoctorDialogComponent, {

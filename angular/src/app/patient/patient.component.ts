@@ -29,7 +29,7 @@ export class PatientComponent extends PagedListingComponentBase<PatientDto> {
 
   Patients: PatientDto[] = [];
   keyword = '';
- primengTableHelper: any = { 
+  primengTableHelper: any = { 
     records: [], 
     showLoadingIndicator: () => {}, 
     hideLoadingIndicator: () => {}, 
@@ -44,29 +44,36 @@ export class PatientComponent extends PagedListingComponentBase<PatientDto> {
   ) {
     super(injector, cd);
   }
+list(event?: LazyLoadEvent): void {
 
-  list(event?: LazyLoadEvent): void {
-    if (this.primengTableHelper.shouldResetPaging(event)) {
-      this.paginator.changePage(0);
+  this.primengTableHelper.showLoadingIndicator();
 
-      if (this.primengTableHelper.records?.length) {
-        return;
-      }
-    }
+  this._patientService
+    .getAllPatients()   // load all patients once
+    .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
+    .subscribe((result) => {
 
-    this.primengTableHelper.showLoadingIndicator();
+      this.Patients = result;
+      this.filterPatients();
 
-    debugger
-    this._patientService
-      .getAllPatients(
-      )
-      .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
-      .subscribe((result) => {
-        this.primengTableHelper.records = result;
-        // this.primengTableHelper.totalRecordsCount = result.totalCount;PagedRoleResultRequestDto
-        this.cd.detectChanges();
-      });
+      this.cd.detectChanges();
+    });
+}
+
+filterPatients() {
+
+  if (!this.keyword) {
+    this.primengTableHelper.records = this.Patients;
+    return;
   }
+
+  const search = this.keyword.toLowerCase();
+
+  this.primengTableHelper.records = this.Patients.filter(patient =>
+    (patient.firstName + ' ' + patient.lastName).toLowerCase().includes(search) ||
+    patient.patientCode?.toLowerCase().includes(search) 
+  );
+}
 
 createPatient(): void {
   const modalRef = this._modalService.show(CreatePatientDialogComponent, {

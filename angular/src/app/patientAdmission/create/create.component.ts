@@ -11,6 +11,7 @@ import {
   DoctorCrudServiceServiceProxy,
   BedCrudServiceServiceProxy,
   PatientAdmissionCrudServiceServiceProxy,
+  RoomDtoServiceServiceProxy,
 } from '../../../shared/service-proxies/service-proxies';
 
 
@@ -35,14 +36,13 @@ import moment from 'moment';
 })
 export class CreatePatientAdmissionDialogComponent extends AppComponentBase implements OnInit {
   saving = false;
-
   admission: PatientAdmissionDto = new PatientAdmissionDto();
-
   statusOptions: string[] = ['Admitted', 'Discharged', 'UnderObservation'];
-
   patients: any[] = [];
   doctors: any[] = [];
   beds: any[] = [];
+  rooms: any[] = [];
+  selectedRoomId: number | null = null;
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -52,6 +52,7 @@ export class CreatePatientAdmissionDialogComponent extends AppComponentBase impl
     private _patientService: PatientCrudServiceServiceProxy,
     private _doctorService: DoctorCrudServiceServiceProxy,
     private _bedService: BedCrudServiceServiceProxy,
+    private _roomService: RoomDtoServiceServiceProxy,
     public bsModalRef: BsModalRef,
     private cd: ChangeDetectorRef
   ) {
@@ -69,21 +70,48 @@ loadDropdowns(): void {
   forkJoin({
     patients: this._patientService.getAllPatients(),
     doctors: this._doctorService.getAllDoctors(),
-    beds: this._bedService.getAllBeds()
+    beds: this._bedService.getAllBeds(),
+    rooms: this._roomService.getAllRooms()
   }).subscribe({
-    next: ({ patients, doctors, beds }) => {
-      // assign directly (arrays)
+    next: ({ patients, doctors, beds, rooms }) => {
+
       this.patients = patients;
       this.doctors = doctors;
-      this.beds = beds;
+      this.rooms = rooms;
 
-      // ✅ fix ExpressionChangedAfterItHasBeenCheckedError
+      // initially empty beds
+      this.beds = [];
+
       this.cd.detectChanges();
     },
     error: (err) => {
       console.error('Failed to load dropdown data', err);
     }
   });
+}
+
+onRoomChange(roomId: number): void {
+
+  this.selectedRoomId = roomId;
+
+  if (!roomId) {
+    this.beds = [];
+    return;
+  }
+
+  this._bedService.getBedsByRoomId(roomId).subscribe({
+    next: (result) => {
+
+      // backend already returns only available beds
+      this.beds = result;
+
+      this.cd.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error loading beds', err);
+    }
+  });
+
 }
 
 

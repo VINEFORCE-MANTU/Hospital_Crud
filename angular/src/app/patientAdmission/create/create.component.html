@@ -106,21 +106,66 @@
             </div>
         </div>
 
-        <!-- Bed -->
+        <!-- Room -->
         <div class="form-group row required">
-            <label class="col-md-3 col-form-label" for="bed">
-                {{ 'Bed' | localize }}
+            <label class="col-md-3 col-form-label" for="room">
+                {{ 'Room' | localize }}
             </label>
+
             <div class="col-md-9">
-                <select class="form-control" name="bed" id="bed" required [(ngModel)]="admission.bedId"
-                    #bedModel="ngModel" #bedEl>
-                    <option *ngFor="let b of beds" [value]="b.id">{{ b.bedNumber }}</option>
+
+                <select class="form-control" name="room" id="room" required [(ngModel)]="selectedRoomId"
+                    (change)="onRoomChange(selectedRoomId)">
+
+                    <option *ngFor="let r of rooms" [value]="r.id">
+                        {{ r.roomNumber }}
+                    </option>
+
                 </select>
 
-                <abp-validation-summary [control]="bedModel" [controlEl]="bedEl"></abp-validation-summary>
             </div>
         </div>
 
+        <!-- Bed -->
+        <div class="form-group row required">
+
+            <!-- Header -->
+            <label class="col-md-3 col-form-label" for="bed">
+                {{ 'AvailableBeds' | localize }}
+            </label>
+            <div class="col-md-9">
+                <!-- Show available bed numbers -->
+                <div *ngIf="beds.length > 0" class="mb-2 text-success">
+                    <strong>{{ 'AvailableBeds' | localize }}:</strong>
+                    <span *ngFor="let b of beds; let last = last">
+                        {{ b.bedNumber }}<span *ngIf="!last">, </span>
+                    </span>
+                </div>
+
+                <!-- Show message if no beds -->
+                <div *ngIf="beds.length === 0" class="text-danger mb-2">
+                    {{ 'NoBedsAvailable' | localize }}
+                </div>
+
+                <!-- Dropdown -->
+                <select class="form-control" name="bed" id="bed" required [(ngModel)]="admission.bedId"
+                    #bedModel="ngModel" #bedEl [disabled]="beds.length === 0">
+
+                    <option value="" disabled selected>
+                        {{ 'SelectBed' | localize }}
+                    </option>
+
+                    <option *ngFor="let b of beds" [value]="b.id">
+                        {{ b.bedNumber }}
+                    </option>
+
+                </select>
+
+                <abp-validation-summary [control]="bedModel" [controlEl]="bedEl">
+                </abp-validation-summary>
+
+            </div>
+        </div>
     </div>
 
     <!-- Modal Footer -->

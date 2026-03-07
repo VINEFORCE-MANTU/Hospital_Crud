@@ -43,29 +43,37 @@ throw new Error('Method not implemented.');
     super(injector, cd);
   }
 
-  list(event?: LazyLoadEvent): void {
-    if (this.primengTableHelper.shouldResetPaging(event)) {
-      this.paginator.changePage(0);
+list(event?: LazyLoadEvent): void {
 
-      if (this.primengTableHelper.records?.length) {
-        return;
-      }
-    }
+  this.primengTableHelper.showLoadingIndicator();
 
-    this.primengTableHelper.showLoadingIndicator();
+  this._bedService
+    .getAllBeds()
+    .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
+    .subscribe((result) => {
 
-    debugger
-    this._bedService
-      .getAllBeds(
-      )
-      .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
-      .subscribe((result) => {
-        this.primengTableHelper.records = result;
-        // this.primengTableHelper.totalRecordsCount = result.totalCount;PagedRoleResultRequestDto
-        this.cd.detectChanges();
-      });
+      this.Beds = result;
+      this.filterBeds(); // apply filter
+
+      this.cd.detectChanges();
+    });
+}
+
+
+filterBeds() {
+
+  if (!this.keyword) {
+    this.primengTableHelper.records = this.Beds;
+    return;
   }
 
+  const search = this.keyword.toLowerCase();
+
+  this.primengTableHelper.records = this.Beds.filter(bed =>
+    bed.bedNumber?.toString().toLowerCase().includes(search) 
+
+  );
+}
  createBed(): void {
     const modalRef = this._modalService.show(CreateBedDialogComponent, {
       class: 'modal-lg',

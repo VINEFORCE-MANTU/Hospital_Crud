@@ -25,14 +25,10 @@ namespace UserCrud.Beds
             _roomRepository = roomRepository;
         }
 
-        // ===================== GET ALL =====================
-        public async Task<List<BedDto>> GetAllBedsAsync()
+        // ===================== MAPPER =====================
+        private BedDto MapToBedDto(bed b)
         {
-            var beds = await _bedRepository
-                .GetAllIncluding(b => b.Room)
-                .ToListAsync();
-
-            return beds.Select(b => new BedDto
+            return new BedDto
             {
                 Id = b.Id,
                 BedNumber = b.BedNumber,
@@ -46,28 +42,30 @@ namespace UserCrud.Beds
                     TotalBeds = b.Room.TotalBeds,
                     IsActive = b.Room.IsActive
                 }
-            }).ToList();
+            };
+        }
+
+        // ===================== GET ALL =====================
+        public async Task<List<BedDto>> GetAllBedsAsync()
+        {
+            var beds = await _bedRepository
+                .GetAllIncluding(b => b.Room)
+                .ToListAsync();
+
+            return beds.Select(MapToBedDto).ToList();
         }
 
         // ===================== GET BY ID =====================
         public async Task<BedDto> GetBedByIdAsync(long id)
         {
-            var bed = await _bedRepository.FirstOrDefaultAsync(b => b.Id == id);
+            var bed = await _bedRepository
+                .GetAllIncluding(b => b.Room)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (bed == null)
                 throw new UserFriendlyException($"Bed with id {id} not found.");
 
-            return new BedDto
-            {
-                Id = bed.Id,
-                BedNumber = bed.BedNumber,
-                IsOccupied = bed.IsOccupied,
-                RoomId = bed.RoomId,
-                Room = bed.Room != null ? new RoomDto
-                {
-                    Id = bed.Room.Id,
-                    RoomType = bed.Room.RoomType
-                } : null
-            };
+            return MapToBedDto(bed);
         }
 
         // ===================== CREATE =====================
@@ -77,8 +75,7 @@ namespace UserCrud.Beds
             {
                 var validationErrors = new List<ValidationResult>();
 
-                // Check room exists
-                var room = await _roomRepository.FirstOrDefaultAsync(r => r.Id == input.RoomId);
+                var room = await _roomRepository.FirstOrDefaultAsync(input.RoomId);
                 if (room == null)
                 {
                     validationErrors.Add(new ValidationResult(
@@ -86,11 +83,13 @@ namespace UserCrud.Beds
                         new[] { "RoomId" }));
                 }
 
-                // Check duplicate BedNumber in the same room
-                if (await _bedRepository.FirstOrDefaultAsync(b => b.RoomId == input.RoomId && b.BedNumber == input.BedNumber) != null)
+                var duplicateBed = await _bedRepository.FirstOrDefaultAsync(
+                    b => b.RoomId == input.RoomId && b.BedNumber == input.BedNumber);
+
+                if (duplicateBed != null)
                 {
                     validationErrors.Add(new ValidationResult(
-                        $"BedNumber '{input.BedNumber}' is already in use in this room.",
+                        $"BedNumber '{input.BedNumber}' already exists in this room.",
                         new[] { "BedNumber" }));
                 }
 
@@ -104,20 +103,11 @@ namespace UserCrud.Beds
                     RoomId = input.RoomId
                 };
 
-                var createdBed = await _bedRepository.InsertAsync(bed);
+                await _bedRepository.InsertAsync(bed);
 
-                return new BedDto
-                {
-                    Id = createdBed.Id,
-                    BedNumber = createdBed.BedNumber,
-                    IsOccupied = createdBed.IsOccupied,
-                    RoomId = createdBed.RoomId,
-                    Room = room != null ? new RoomDto
-                    {
-                        Id = room.Id,
-                        RoomType = room.RoomType
-                    } : null
-                };
+                bed.Room = room;
+
+                return MapToBedDto(bed);
             }
             catch (AbpValidationException)
             {
@@ -125,7 +115,7 @@ namespace UserCrud.Beds
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException("An unexpected error occurred while creating the bed.", ex);
+                throw new UserFriendlyException("Error while creating the bed.", ex);
             }
         }
 
@@ -134,23 +124,25 @@ namespace UserCrud.Beds
         {
             try
             {
-                var bed = await _bedRepository.FirstOrDefaultAsync(b => b.Id == input.Id);
+                var bed = await _bedRepository.FirstOrDefaultAsync(input.Id);
                 if (bed == null)
                     throw new UserFriendlyException($"Bed with id {input.Id} not found.");
 
                 var validationErrors = new List<ValidationResult>();
 
-                // Check duplicate BedNumber in the same room (exclude current bed)
-                if (await _bedRepository.FirstOrDefaultAsync(
-                    b => b.RoomId == input.RoomId && b.BedNumber == input.BedNumber && b.Id != input.Id) != null)
+                var duplicate = await _bedRepository.FirstOrDefaultAsync(
+                    b => b.RoomId == input.RoomId &&
+                         b.BedNumber == input.BedNumber &&
+                         b.Id != input.Id);
+
+                if (duplicate != null)
                 {
                     validationErrors.Add(new ValidationResult(
-                        $"BedNumber '{input.BedNumber}' is already in use in this room.",
+                        $"BedNumber '{input.BedNumber}' already exists in this room.",
                         new[] { "BedNumber" }));
                 }
 
-                // Check room exists
-                var room = await _roomRepository.FirstOrDefaultAsync(r => r.Id == input.RoomId);
+                var room = await _roomRepository.FirstOrDefaultAsync(input.RoomId);
                 if (room == null)
                 {
                     validationErrors.Add(new ValidationResult(
@@ -161,25 +153,15 @@ namespace UserCrud.Beds
                 if (validationErrors.Any())
                     throw new AbpValidationException("Validation failed", validationErrors);
 
-                // Update bed fields
                 bed.BedNumber = input.BedNumber;
                 bed.IsOccupied = input.IsOccupied;
                 bed.RoomId = input.RoomId;
 
                 await _bedRepository.UpdateAsync(bed);
 
-                return new BedDto
-                {
-                    Id = bed.Id,
-                    BedNumber = bed.BedNumber,
-                    IsOccupied = bed.IsOccupied,
-                    RoomId = bed.RoomId,
-                    Room = room != null ? new RoomDto
-                    {
-                        Id = room.Id,
-                        RoomType = room.RoomType
-                    } : null
-                };
+                bed.Room = room;
+
+                return MapToBedDto(bed);
             }
             catch (AbpValidationException)
             {
@@ -187,18 +169,37 @@ namespace UserCrud.Beds
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException("An error occurred while updating the bed. Please try again.", ex);
+                throw new UserFriendlyException("Error while updating the bed.", ex);
             }
         }
 
         // ===================== DELETE =====================
         public async Task DeleteBedAsync(long id)
         {
-            var bed = await _bedRepository.FirstOrDefaultAsync(b => b.Id == id);
+            var bed = await _bedRepository.FirstOrDefaultAsync(id);
+
             if (bed == null)
                 throw new UserFriendlyException($"Bed with id {id} not found.");
 
             await _bedRepository.DeleteAsync(bed);
+        }
+
+        // ===================== GET BEDS BY ROOM =====================
+        public async Task<List<BedDto>> GetBedsByRoomIdAsync(long roomId)
+        {
+            try
+            {
+                var beds = await _bedRepository
+                    .GetAllIncluding(b => b.Room)
+                    .Where(b => b.RoomId == roomId && !b.IsOccupied)
+                    .ToListAsync();
+
+                return beds.Select(MapToBedDto).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException("Error while fetching available beds.", ex);
+            }
         }
     }
 }

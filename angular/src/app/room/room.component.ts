@@ -42,29 +42,37 @@ throw new Error('Method not implemented.');
   ) {
     super(injector, cd);
   }
+list(event?: LazyLoadEvent): void {
 
-  list(event?: LazyLoadEvent): void {
-    if (this.primengTableHelper.shouldResetPaging(event)) {
-      this.paginator.changePage(0);
+  this.primengTableHelper.showLoadingIndicator();
 
-      if (this.primengTableHelper.records?.length) {
-        return;
-      }
-    }
+  this._roomService
+    .getAllRooms()
+    .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
+    .subscribe((result) => {
 
-    this.primengTableHelper.showLoadingIndicator();
+      this.Rooms = result;
+      this.filterRooms(); // apply filter
 
-    debugger
-    this._roomService
-      .getAllRooms(
-      )
-      .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
-      .subscribe((result) => {
-        this.primengTableHelper.records = result;
-        // this.primengTableHelper.totalRecordsCount = result.totalCount;PagedRoleResultRequestDto
-        this.cd.detectChanges();
-      });
+      this.cd.detectChanges();
+    });
+}
+
+filterRooms() {
+
+  if (!this.keyword) {
+    this.primengTableHelper.records = this.Rooms;
+    return;
   }
+
+  const search = this.keyword.toLowerCase();
+
+  this.primengTableHelper.records = this.Rooms.filter(room =>
+      room.roomNumber?.toLowerCase().includes(search) ||
+      room.roomTypeName?.toLowerCase().includes(search) ||
+      room.totalBeds?.toString().includes(search)
+  );
+}
 
  createRoom(): void {
     const modalRef = this._modalService.show(CreateRoomDialogComponent, {
