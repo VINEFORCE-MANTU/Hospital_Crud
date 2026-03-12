@@ -8,7 +8,8 @@
           <h1>{{ 'PatientAdmissions' | localize }}</h1>
         </div>
         <div class="col-6 text-right">
-          <button class="btn bg-blue" (click)="createPatientAdmission()">
+          <button *ngIf="isGranted('Pages.PatientAdmission.Create')" class="btn bg-blue"
+            (click)="createPatientAdmission()">
             <i class="fa fa-plus-square mr-1"></i>
             {{ 'CreatePatientAdmission' | localize }}
           </button>
@@ -33,12 +34,8 @@
                     <i class="fas fa-search"></i>
                   </button>
                 </div>
-                <input
-                  type="text"
-                  class="form-control"
-                  [(ngModel)]="keyword"
-                  [placeholder]="'SearchPatientAdmission' | localize"
-                  (keyup)="filterAdmissions()" />
+                <input type="text" class="form-control" [(ngModel)]="keyword"
+                  [placeholder]="'SearchPatientAdmission' | localize" (keyup)="filterAdmissions()" />
               </div>
             </div>
           </div>
@@ -48,14 +45,8 @@
         <div class="card-body">
           <div class="table-responsive">
 
-            <p-table
-              #dataTable
-              class="patient-admissions-table"
-              [value]="primengTableHelper.records"
-              [lazy]="true"
-              (onLazyLoad)="list($event)"
-              [paginator]="false"
-              [rows]="primengTableHelper.defaultRecordsCountPerPage"
+            <p-table #dataTable class="patient-admissions-table" [value]="primengTableHelper.records" [lazy]="true"
+              (onLazyLoad)="list($event)" [paginator]="false" [rows]="primengTableHelper.defaultRecordsCountPerPage"
               [tableStyle]="{ 'min-width': '70rem' }">
 
               <!-- Header -->
@@ -70,7 +61,7 @@
                     {{ 'PatientName' | localize }}
                     <p-sortIcon field="patient.firstName"></p-sortIcon>
                   </th>
-                   <!-- <th pSortableColumn="patient.lastName">
+                  <!-- <th pSortableColumn="patient.lastName">
                     {{ 'Patient' | localize }}
                     <p-sortIcon field="patient.lastName"></p-sortIcon>
                   </th> -->
@@ -115,7 +106,7 @@
               <ng-template pTemplate="body" let-admission>
                 <tr>
                   <td>{{ admission.id }}</td>
-                  <td>{{ admission.patient?.firstName}}  {{ admission.patient?.lastName}}</td>
+                  <td>{{ admission.patient?.firstName}} {{ admission.patient?.lastName}}</td>
                   <!-- <td>{{ admission.patient?.lastName}}</td> -->
                   <td>{{ admission.doctor?.fullName }}</td>
                   <td>{{ admission.bed?.bedNumber }}</td>
@@ -125,21 +116,20 @@
                   <td>{{ admission.status }}</td>
                   <td>
                     <div class="d-inline-flex align-items-center gap-2 justify-content-between">
-                      <button
-                        type="button"
+
+                      <button *ngIf="isGranted('Pages.PatientAdmission.Edit')" type="button"
                         class="btn btn-sm bg-secondary d-inline-flex align-items-center px-2"
                         (click)="editPatientAdmission(admission)">
                         <i class="fas fa-pencil-alt mr-1"></i>
                         {{ 'Edit' | localize }}
                       </button>
 
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-danger d-inline-flex align-items-center px-2"
-                        (click)="delete(admission)">
+                      <button *ngIf="isGranted('Pages.PatientAdmission.Delete')" type="button"
+                        class="btn btn-sm btn-danger d-inline-flex align-items-center px-2" (click)="delete(admission)">
                         <i class="fas fa-trash mr-1"></i>
                         {{ 'Delete' | localize }}
                       </button>
+
                     </div>
                   </td>
                 </tr>
@@ -157,12 +147,9 @@
 
         <!-- 📑 Pagination -->
         <div class="card-footer bg-white border-top">
-          <p-paginator
-            #paginator
-            [rows]="primengTableHelper.defaultRecordsCountPerPage"
+          <p-paginator #paginator [rows]="primengTableHelper.defaultRecordsCountPerPage"
             [totalRecords]="primengTableHelper.totalRecordsCount"
-            [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
-            (onPageChange)="list($event)">
+            [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage" (onPageChange)="list($event)">
           </p-paginator>
         </div>
 

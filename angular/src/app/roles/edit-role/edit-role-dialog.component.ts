@@ -10,6 +10,7 @@ import {
     RoleEditDto,
     FlatPermissionDto,
 } from '@shared/service-proxies/service-proxies';
+import { KeyValuePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AbpModalHeaderComponent } from '../../../shared/components/modal/abp-modal-header.component';
 import { TabsetComponent, TabDirective } from 'ngx-bootstrap/tabs';
@@ -28,6 +29,7 @@ import { LocalizePipe } from '@shared/pipes/localize.pipe';
         AbpValidationSummaryComponent,
         AbpModalFooterComponent,
         LocalizePipe,
+        KeyValuePipe
     ],
 })
 export class EditRoleDialogComponent extends AppComponentBase implements OnInit {
@@ -39,6 +41,9 @@ export class EditRoleDialogComponent extends AppComponentBase implements OnInit 
     permissions: FlatPermissionDto[];
     grantedPermissionNames: string[];
     checkedPermissionsMap: { [key: string]: boolean } = {};
+
+    // ✅ ADDED: grouped permissions for better UI structure
+    groupedPermissions: { [key: string]: FlatPermissionDto[] } = {};
 
     constructor(
         injector: Injector,
@@ -55,6 +60,10 @@ export class EditRoleDialogComponent extends AppComponentBase implements OnInit 
             this.permissions = result.permissions;
             this.grantedPermissionNames = result.grantedPermissionNames;
             this.setInitialPermissionsStatus();
+
+            // ✅ ADDED: group permissions by module
+            this.groupPermissions();
+
             this.cd.detectChanges();
         });
     }
@@ -100,5 +109,21 @@ export class EditRoleDialogComponent extends AppComponentBase implements OnInit 
                 this.saving = false;
             }
         );
+    }
+
+    // ✅ ADDED METHOD: group permissions (Doctor, Patient, Room, Bed, etc.)
+    groupPermissions(): void {
+        this.groupedPermissions = {};
+
+        this.permissions.forEach((p) => {
+            const parts = p.name.split('.');
+            const module = parts.length > 1 ? parts[1] : 'Other';
+
+            if (!this.groupedPermissions[module]) {
+                this.groupedPermissions[module] = [];
+            }
+
+            this.groupedPermissions[module].push(p);
+        });
     }
 }

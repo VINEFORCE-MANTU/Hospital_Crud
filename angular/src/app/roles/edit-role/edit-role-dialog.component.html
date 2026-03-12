@@ -1,12 +1,17 @@
 <form class="form-horizontal" autocomplete="off" #editRoleForm="ngForm" (ngSubmit)="save()">
     <abp-modal-header [title]="'EditRole' | localize" (onCloseClick)="bsModalRef.hide()"></abp-modal-header>
+
     <div class="modal-body">
         <tabset>
+
+            <!-- DETAILS TAB -->
             <tab [heading]="'Details' | localize" class="pt-3 px-2">
+
                 <div class="form-group row required">
                     <label class="col-md-3 col-form-label" for="name">
                         {{ 'Name' | localize }}
                     </label>
+
                     <div class="col-md-9">
                         <input
                             type="text"
@@ -19,13 +24,19 @@
                             [(ngModel)]="role.name"
                             #nameModel="ngModel"
                             #nameEl />
-                        <abp-validation-summary [control]="nameModel" [controlEl]="nameEl"></abp-validation-summary>
+
+                        <abp-validation-summary
+                            [control]="nameModel"
+                            [controlEl]="nameEl">
+                        </abp-validation-summary>
                     </div>
                 </div>
+
                 <div class="form-group row required">
                     <label class="col-md-3 col-form-label" for="displayName">
                         {{ 'DisplayName' | localize }}
                     </label>
+
                     <div class="col-md-9">
                         <input
                             type="text"
@@ -38,49 +49,87 @@
                             [(ngModel)]="role.displayName"
                             #displayNameModel="ngModel"
                             #displayNameEl />
+
                         <abp-validation-summary
                             [control]="displayNameModel"
-                            [controlEl]="displayNameEl"></abp-validation-summary>
+                            [controlEl]="displayNameEl">
+                        </abp-validation-summary>
                     </div>
                 </div>
+
                 <div class="form-group row mb-0">
                     <label class="col-md-3 col-form-label" for="description">
                         {{ 'RoleDescription' | localize }}
                     </label>
+
                     <div class="col-md-9">
                         <textarea
                             type="text"
                             class="form-control"
                             name="description"
                             id="description"
-                            [(ngModel)]="role.description"></textarea>
+                            [(ngModel)]="role.description">
+                        </textarea>
                     </div>
                 </div>
+
             </tab>
+
+
+            <!-- PERMISSIONS TAB -->
             <tab [heading]="'Permissions' | localize" class="pt-3 px-2">
-                <div class="form-group row mb-0">
-                    @for (permission of permissions; track permission; let i = $index) {
-                        <div class="col-md-6">
-                            <div class="custom-control custom-checkbox">
-                                <input
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                    [id]="'permission_' + i"
-                                    [checked]="isPermissionChecked(permission.name)"
-                                    [disabled]="role.isStatic"
-                                    (change)="onPermissionChange(permission, $event)" />
-                                <label class="custom-control-label" [for]="'permission_' + i">
-                                    {{ permission.displayName }}
-                                </label>
+
+                <!-- GROUPED PERMISSIONS -->
+                @for (group of groupedPermissions | keyvalue; track group.key) {
+
+                    <div class="col-12 mt-3 mb-2">
+                        <h5 class="font-weight-bold text-primary">
+                            {{ group.key }}
+                        </h5>
+                        <hr />
+                    </div>
+
+                    <div class="form-group row mb-2">
+
+                        @for (permission of group.value; track permission; let i = $index) {
+
+                            <div class="col-md-6">
+                                <div class="custom-control custom-checkbox">
+
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input"
+                                        [id]="'permission_' + permission.name"
+                                        [checked]="isPermissionChecked(permission.name)"
+                                        [disabled]="role.isStatic"
+                                        (change)="onPermissionChange(permission, $event)" />
+
+                                    <label
+                                        class="custom-control-label"
+                                        [for]="'permission_' + permission.name">
+
+                                        {{ permission.displayName }}
+
+                                    </label>
+
+                                </div>
                             </div>
-                        </div>
-                    }
-                </div>
+
+                        }
+
+                    </div>
+
+                }
+
             </tab>
+
         </tabset>
     </div>
+
     <abp-modal-footer
         [cancelDisabled]="saving"
         [saveDisabled]="!editRoleForm.form.valid || saving"
-        (onCancelClick)="bsModalRef.hide()"></abp-modal-footer>
+        (onCancelClick)="bsModalRef.hide()">
+    </abp-modal-footer>
+
 </form>

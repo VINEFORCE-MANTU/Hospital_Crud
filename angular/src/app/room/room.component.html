@@ -8,7 +8,7 @@
                     <h1>{{ 'Rooms' | localize }}</h1>
                 </div>
                 <div class="col-6 text-right">
-                    <button class="btn bg-blue" (click)=createRoom()>
+                    <button *ngIf="isGranted('Pages.Room.Create')" class="btn bg-blue" (click)="createRoom()">
                         <i class="fa fa-plus-square mr-1"></i>
                         {{ 'CreateRoom' | localize }}
                     </button>
@@ -91,19 +91,21 @@
                                     </td>
                                     <td>
                                         <div class="d-inline-flex align-items-center gap-2 justify-content-between">
-                                            <button type="button"
+
+                                            <button *ngIf="isGranted('Pages.Room.Edit')" type="button"
                                                 class="btn btn-sm bg-secondary d-inline-flex align-items-center px-2"
                                                 (click)="editRoom(room)">
                                                 <i class="fas fa-pencil-alt mr-1"></i>
                                                 {{ 'Edit' | localize }}
                                             </button>
 
-                                            <button type="button"
+                                            <button *ngIf="isGranted('Pages.Room.Delete')" type="button"
                                                 class="btn btn-sm btn-danger d-inline-flex align-items-center px-2"
                                                 (click)="delete(room)">
                                                 <i class="fas fa-trash mr-1"></i>
                                                 {{ 'Delete' | localize }}
                                             </button>
+
                                         </div>
                                     </td>
                                 </tr>

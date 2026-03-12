@@ -8,7 +8,7 @@
                     <h1>{{ 'Beds' | localize }}</h1>
                 </div>
                 <div class="col-6 text-right">
-                    <button class="btn bg-blue" (click)="createBed()">
+                    <button *ngIf="isGranted('Pages.Bed.Create')" class="btn bg-blue" (click)="createBed()">
                         <i class="fa fa-plus-square mr-1"></i>
                         {{ 'CreateBed' | localize }}
                     </button>
@@ -85,19 +85,21 @@
                                     <td>{{ bed.room.roomNumber }}</td>
                                     <td>
                                         <div class="d-inline-flex align-items-center gap-2 justify-content-between">
-                                            <button type="button"
+
+                                            <button *ngIf="isGranted('Pages.Bed.Edit')" type="button"
                                                 class="btn btn-sm bg-secondary d-inline-flex align-items-center px-2"
                                                 (click)="editBed(bed)">
                                                 <i class="fas fa-pencil-alt mr-1"></i>
                                                 {{ 'Edit' | localize }}
                                             </button>
 
-                                            <button type="button"
+                                            <button *ngIf="isGranted('Pages.Bed.Delete')" type="button"
                                                 class="btn btn-sm btn-danger d-inline-flex align-items-center px-2"
                                                 (click)="delete(bed)">
                                                 <i class="fas fa-trash mr-1"></i>
                                                 {{ 'Delete' | localize }}
                                             </button>
+
                                         </div>
                                     </td>
                                 </tr>

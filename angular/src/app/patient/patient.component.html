@@ -8,7 +8,7 @@
           <h1>{{ 'Patients' | localize }}</h1>
         </div>
         <div class="col-6 text-right">
-          <button class="btn bg-blue" (click)="createPatient()">
+          <button *ngIf="isGranted('Pages.Patient.Create')" class="btn bg-blue" (click)="createPatient()">
             <i class="fa fa-plus-square mr-1"></i>
             {{ 'CreatePatient' | localize }}
           </button>
@@ -34,8 +34,8 @@
                     <i class="fas fa-search"></i>
                   </button>
                 </div>
-                <input type="text" class="form-control" [(ngModel)]="keyword"
-                  [placeholder]="'SearchPatient' | localize" (keyup)="filterPatients()" />
+                <input type="text" class="form-control" [(ngModel)]="keyword" [placeholder]="'SearchPatient' | localize"
+                  (keyup)="filterPatients()" />
               </div>
             </div>
           </div>
@@ -118,17 +118,20 @@
 
                   <td>
                     <div class="d-inline-flex align-items-center gap-2 justify-content-between">
-                      <button type="button" class="btn btn-sm bg-secondary d-inline-flex align-items-center px-2"
+
+                      <button *ngIf="isGranted('Pages.Patient.Edit')" type="button"
+                        class="btn btn-sm bg-secondary d-inline-flex align-items-center px-2"
                         (click)="editPatient(patient)">
                         <i class="fas fa-pencil-alt mr-1"></i>
                         {{ 'Edit' | localize }}
                       </button>
 
-                      <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center px-2"
-                        (click)="delete(patient)">
+                      <button *ngIf="isGranted('Pages.Patient.Delete')" type="button"
+                        class="btn btn-sm btn-danger d-inline-flex align-items-center px-2" (click)="delete(patient)">
                         <i class="fas fa-trash mr-1"></i>
                         {{ 'Delete' | localize }}
                       </button>
+
                     </div>
                   </td>
                 </tr>
