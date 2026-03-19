@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserCrud.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using UserCrud.EntityFrameworkCore;
 namespace UserCrud.Migrations
 {
     [DbContext(typeof(UserCrudDbContext))]
-    partial class UserCrudDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260317050324_InitialsMigrations")]
+    partial class InitialsMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1678,12 +1681,7 @@ namespace UserCrud.Migrations
                     b.Property<int>("Specialization")
                         .HasColumnType("int");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("docters");
                 });
@@ -1763,9 +1761,6 @@ namespace UserCrud.Migrations
                     b.Property<DateTime>("AdmissionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ApprovalStatus")
-                        .HasColumnType("int");
-
                     b.Property<long>("BedId")
                         .HasColumnType("bigint");
 
@@ -1801,9 +1796,6 @@ namespace UserCrud.Migrations
 
                     b.Property<long>("PatientId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("RejectionReason")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -2195,17 +2187,6 @@ namespace UserCrud.Migrations
                         .IsRequired();
 
                     b.Navigation("Room");
-                });
-
-            modelBuilder.Entity("UserCrud.Docters.doctor", b =>
-                {
-                    b.HasOne("UserCrud.Authorization.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UserCrud.MultiTenancy.Tenant", b =>

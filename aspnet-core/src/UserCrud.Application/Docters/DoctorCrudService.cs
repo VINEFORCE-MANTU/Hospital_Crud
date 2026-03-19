@@ -11,7 +11,7 @@ using UserCrud.Docters.Dto;
 
 namespace UserCrud.Docters
 {
-    public class DoctorCrudService : ApplicationService
+    public class DoctorCrudService : ApplicationService , IDoctorCrudApplicationModule
     {
         private readonly IRepository<doctor, long> _doctorRepository;
 
@@ -105,7 +105,8 @@ namespace UserCrud.Docters
                     Qualification = input.Qualification,
                     PhoneNumber = input.PhoneNumber,
                     Email = input.Email,
-                    IsAvailble = input.IsAvailble
+                    IsAvailble = input.IsAvailble,
+                    UserId = AbpSession.UserId.Value
                 };
 
                 // Insert into repository
@@ -121,7 +122,9 @@ namespace UserCrud.Docters
                     Qualification = createdDoctor.Qualification,
                     PhoneNumber = createdDoctor.PhoneNumber,
                     Email = createdDoctor.Email,
-                    IsAvailble = createdDoctor.IsAvailble
+                    IsAvailble = createdDoctor.IsAvailble,
+                    
+                    UserId = createdDoctor.UserId
                 };
             }
             catch (AbpValidationException vex)
@@ -212,7 +215,15 @@ namespace UserCrud.Docters
                 throw new UserFriendlyException("An unexpected error occurred while updating the doctor.", ex);
             }
         }
+        public async Task<DocterDto> GetMyDoctorProfile()
+        {
+            var userId = AbpSession.UserId;
 
+            var doctor = await _doctorRepository
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            return ObjectMapper.Map<DocterDto>(doctor);
+        }
 
         // Delete a doctor
         public async Task DeleteDoctorAsync(long id)

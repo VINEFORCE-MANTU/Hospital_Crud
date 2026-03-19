@@ -8,13 +8,14 @@ using UserCrud.Docters.Enums;
 
 namespace UserCrud.Docters.Dto
 {
-    public class CreateDocterDto: FullAuditedEntity<long>
+    public class CreateDocterDto
     {
         public string DocterCode { get; set; }
 
         public string FullName { get; set; }
         public DoctorSpecializationEnum Specialization { get; set; }
         public string Qualification { get; set; }
+        public long UserId { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public bool IsAvailble { get; set; }

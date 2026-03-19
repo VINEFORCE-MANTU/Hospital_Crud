@@ -796,6 +796,57 @@ export class DoctorCrudServiceServiceProxy {
     }
 
     /**
+     * @return OK
+     */
+    getMyDoctorProfile(): Observable<DocterDto> {
+        let url_ = this.baseUrl + "/api/services/app/DoctorCrudService/GetMyDoctorProfile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMyDoctorProfile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMyDoctorProfile(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DocterDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DocterDto>;
+        }));
+    }
+
+    protected processGetMyDoctorProfile(response: HttpResponseBase): Observable<DocterDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DocterDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @param id (optional) 
      * @return OK
      */
@@ -1030,6 +1081,64 @@ export class PatientAdmissionCrudServiceServiceProxy {
     }
 
     /**
+     * @return OK
+     */
+    getMyPatients(): Observable<PatientAdmissionDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/PatientAdmissionCrudService/GetMyPatients";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMyPatients(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMyPatients(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PatientAdmissionDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PatientAdmissionDto[]>;
+        }));
+    }
+
+    protected processGetMyPatients(response: HttpResponseBase): Observable<PatientAdmissionDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(PatientAdmissionDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return OK
      */
@@ -1076,6 +1185,115 @@ export class PatientAdmissionCrudServiceServiceProxy {
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PatientAdmissionDto.fromJS(resultData200);
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return OK
+     */
+    approveAdmission(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PatientAdmissionCrudService/ApproveAdmission?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApproveAdmission(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApproveAdmission(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processApproveAdmission(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param id (optional) 
+     * @param reason (optional) 
+     * @return OK
+     */
+    rejectAdmission(id: number | undefined, reason: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PatientAdmissionCrudService/RejectAdmission?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        if (reason === null)
+            throw new Error("The parameter 'reason' cannot be null.");
+        else if (reason !== undefined)
+            url_ += "reason=" + encodeURIComponent("" + reason) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRejectAdmission(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRejectAdmission(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRejectAdmission(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -3729,18 +3947,11 @@ export interface ICreateBedDto {
 }
 
 export class CreateDocterDto implements ICreateDocterDto {
-    id: number;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
     docterCode: string | undefined;
     fullName: string | undefined;
     specialization: DoctorSpecializationEnum;
     qualification: string | undefined;
+    userId: number;
     phoneNumber: string | undefined;
     email: string | undefined;
     isAvailble: boolean;
@@ -3756,18 +3967,11 @@ export class CreateDocterDto implements ICreateDocterDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"];
-            this.creationTime = _data["creationTime"] ? moment(_data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = _data["creatorUserId"];
-            this.lastModificationTime = _data["lastModificationTime"] ? moment(_data["lastModificationTime"].toString()) : <any>undefined;
-            this.lastModifierUserId = _data["lastModifierUserId"];
-            this.isDeleted = _data["isDeleted"];
-            this.deleterUserId = _data["deleterUserId"];
-            this.deletionTime = _data["deletionTime"] ? moment(_data["deletionTime"].toString()) : <any>undefined;
             this.docterCode = _data["docterCode"];
             this.fullName = _data["fullName"];
             this.specialization = _data["specialization"];
             this.qualification = _data["qualification"];
+            this.userId = _data["userId"];
             this.phoneNumber = _data["phoneNumber"];
             this.email = _data["email"];
             this.isAvailble = _data["isAvailble"];
@@ -3783,18 +3987,11 @@ export class CreateDocterDto implements ICreateDocterDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
-        data["lastModifierUserId"] = this.lastModifierUserId;
-        data["isDeleted"] = this.isDeleted;
-        data["deleterUserId"] = this.deleterUserId;
-        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
         data["docterCode"] = this.docterCode;
         data["fullName"] = this.fullName;
         data["specialization"] = this.specialization;
         data["qualification"] = this.qualification;
+        data["userId"] = this.userId;
         data["phoneNumber"] = this.phoneNumber;
         data["email"] = this.email;
         data["isAvailble"] = this.isAvailble;
@@ -3810,18 +4007,11 @@ export class CreateDocterDto implements ICreateDocterDto {
 }
 
 export interface ICreateDocterDto {
-    id: number;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
     docterCode: string | undefined;
     fullName: string | undefined;
     specialization: DoctorSpecializationEnum;
     qualification: string | undefined;
+    userId: number;
     phoneNumber: string | undefined;
     email: string | undefined;
     isAvailble: boolean;
@@ -4238,6 +4428,7 @@ export class DocterDto implements IDocterDto {
     qualification: string | undefined;
     phoneNumber: string | undefined;
     email: string | undefined;
+    userId: number;
     isAvailble: boolean;
 
     constructor(data?: IDocterDto) {
@@ -4266,6 +4457,7 @@ export class DocterDto implements IDocterDto {
             this.qualification = _data["qualification"];
             this.phoneNumber = _data["phoneNumber"];
             this.email = _data["email"];
+            this.userId = _data["userId"];
             this.isAvailble = _data["isAvailble"];
         }
     }
@@ -4294,6 +4486,7 @@ export class DocterDto implements IDocterDto {
         data["qualification"] = this.qualification;
         data["phoneNumber"] = this.phoneNumber;
         data["email"] = this.email;
+        data["userId"] = this.userId;
         data["isAvailble"] = this.isAvailble;
         return data;
     }
@@ -4322,6 +4515,7 @@ export interface IDocterDto {
     qualification: string | undefined;
     phoneNumber: string | undefined;
     email: string | undefined;
+    userId: number;
     isAvailble: boolean;
 }
 
@@ -4653,6 +4847,8 @@ export class PatientAdmissionDto implements IPatientAdmissionDto {
     dischargeDate: moment.Moment | undefined;
     diagnosis: string | undefined;
     status: string | undefined;
+    approvalStatus: string | undefined;
+    rejectionReason: string | undefined;
     patientId: number;
     doctorId: number;
     bedId: number;
@@ -4683,6 +4879,8 @@ export class PatientAdmissionDto implements IPatientAdmissionDto {
             this.dischargeDate = _data["dischargeDate"] ? moment(_data["dischargeDate"].toString()) : <any>undefined;
             this.diagnosis = _data["diagnosis"];
             this.status = _data["status"];
+            this.approvalStatus = _data["approvalStatus"];
+            this.rejectionReason = _data["rejectionReason"];
             this.patientId = _data["patientId"];
             this.doctorId = _data["doctorId"];
             this.bedId = _data["bedId"];
@@ -4713,6 +4911,8 @@ export class PatientAdmissionDto implements IPatientAdmissionDto {
         data["dischargeDate"] = this.dischargeDate ? this.dischargeDate.toISOString() : <any>undefined;
         data["diagnosis"] = this.diagnosis;
         data["status"] = this.status;
+        data["approvalStatus"] = this.approvalStatus;
+        data["rejectionReason"] = this.rejectionReason;
         data["patientId"] = this.patientId;
         data["doctorId"] = this.doctorId;
         data["bedId"] = this.bedId;
@@ -4743,6 +4943,8 @@ export interface IPatientAdmissionDto {
     dischargeDate: moment.Moment | undefined;
     diagnosis: string | undefined;
     status: string | undefined;
+    approvalStatus: string | undefined;
+    rejectionReason: string | undefined;
     patientId: number;
     doctorId: number;
     bedId: number;

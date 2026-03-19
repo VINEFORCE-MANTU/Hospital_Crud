@@ -18,6 +18,7 @@ namespace UserCrud.Docters.Dto
         public string Qualification { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        public long UserId { get; set; }
         public bool IsAvailble { get; set; }
 
     }

@@ -10,10 +10,14 @@ namespace UserCrud.PatientAdmission
     public interface IPatientAdmissionDtoApplicationModule
     {
         Task<List<PatientAdmissionDto>> GetAllPatientAdmissionsAsync();
-        Task<PatientAdmissionDto> GetPatientAdmissionByIdAsync(int id);
+        Task<PatientAdmissionDto> GetPatientAdmissionByIdAsync(long id);
         Task<PatientAdmissionDto> CreatePatientAdmissionAsync(CreatePatientAdmissionDto input);
         Task<PatientAdmissionDto> UpdatePatientAdmissionAsync(UpdatePatientAdmissionDto input);
-        Task DeletePatientAdmissionAsync(int id);
+        Task<List<PatientAdmissionDto>> GetMyPatients();
+        Task ApproveAdmission(long id);
+
+        Task RejectAdmission(long id, string reason);
+        Task DeletePatientAdmissionAsync(long id);
 
     }
 }

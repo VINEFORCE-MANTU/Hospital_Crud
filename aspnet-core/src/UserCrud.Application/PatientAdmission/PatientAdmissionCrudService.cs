@@ -12,12 +12,13 @@ using UserCrud.Beds.Dto;
 using UserCrud.Docters;
 using UserCrud.Docters.Dto;
 using UserCrud.PatientAdmission.Dto;
+using UserCrud.PatientAdmission.Enums;
 using UserCrud.Patients;
 using UserCrud.Patients.Dto;
 
 namespace UserCrud.PatientAdmission
 {
-    public class PatientAdmissionCrudService : ApplicationService
+    public class PatientAdmissionCrudService : ApplicationService, IPatientAdmissionDtoApplicationModule
     {
         private readonly IRepository<patientAdmission, long> _patientAdmissionRepository;
         private readonly IRepository<patient, long> _patientRepository;
@@ -90,6 +91,26 @@ namespace UserCrud.PatientAdmission
             return MapToDto(admission);
         }
 
+        public async Task<List<PatientAdmissionDto>> GetMyPatients()
+        {
+            var userId = AbpSession.UserId.Value;
+
+            var doctor = await _doctorRepository
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            var admissions = await _patientAdmissionRepository
+                .GetAllIncluding(
+                    x => x.Patient,
+                    x => x.Doctor,
+                    x => x.Bed,
+                    x => x.Bed.Room
+                )
+                .Where(x => x.DoctorId == doctor.Id)
+                .ToListAsync();
+
+            return ObjectMapper.Map<List<PatientAdmissionDto>>(admissions);
+        }
+
         // Update admission
         public async Task<PatientAdmissionDto> UpdatePatientAdmissionAsync(UpdatePatientAdmissionDto input)
         {
@@ -121,6 +142,27 @@ namespace UserCrud.PatientAdmission
             await _patientAdmissionRepository.UpdateAsync(admission);
 
             return MapToDto(admission);
+        }
+
+        public async Task ApproveAdmission(long id)
+        {
+            var admission = await _patientAdmissionRepository.FirstOrDefaultAsync(id)
+                ?? throw new EntityNotFoundException(typeof(patientAdmission), id);
+
+            admission.ApprovalStatus = AdmissionApprovalStatus.Approved;
+
+            await _patientAdmissionRepository.UpdateAsync(admission);
+        }
+
+        public async Task RejectAdmission(long id, string reason)
+        {
+            var admission = await _patientAdmissionRepository.FirstOrDefaultAsync(id)
+                ?? throw new EntityNotFoundException(typeof(patientAdmission), id);
+
+            admission.ApprovalStatus = AdmissionApprovalStatus.Rejected;
+            admission.RejectionReason = reason;
+
+            await _patientAdmissionRepository.UpdateAsync(admission);
         }
 
         // Delete admission

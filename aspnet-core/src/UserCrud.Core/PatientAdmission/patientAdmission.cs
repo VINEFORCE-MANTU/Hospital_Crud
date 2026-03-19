@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UserCrud.Beds;
 using UserCrud.Docters;
+using UserCrud.PatientAdmission.Enums;
 using UserCrud.Patients;
 
 namespace UserCrud.PatientAdmission
@@ -19,6 +20,8 @@ namespace UserCrud.PatientAdmission
         public string Diagnosis { get; set; }
 
         public string Status { get; set; }
+        public AdmissionApprovalStatus ApprovalStatus { get; set; }   // Pending / Approved / Rejected
+        public string RejectionReason { get; set; }
 
         public long PatientId { get; set; }
         public long DoctorId { get; set; }

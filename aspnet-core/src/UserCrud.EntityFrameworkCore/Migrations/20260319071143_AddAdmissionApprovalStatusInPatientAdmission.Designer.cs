@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserCrud.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using UserCrud.EntityFrameworkCore;
 namespace UserCrud.Migrations
 {
     [DbContext(typeof(UserCrudDbContext))]
-    partial class UserCrudDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260319071143_AddAdmissionApprovalStatusInPatientAdmission")]
+    partial class AddAdmissionApprovalStatusInPatientAdmission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

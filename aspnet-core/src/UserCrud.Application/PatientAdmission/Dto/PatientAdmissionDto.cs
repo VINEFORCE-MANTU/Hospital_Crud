@@ -23,12 +23,16 @@ namespace UserCrud.PatientAdmission.Dto
         public string Diagnosis { get; set; }
 
         public string Status { get; set; }
+        public string ApprovalStatus { get; set; }
+
+        // Reason if doctor rejects
+        public string RejectionReason { get; set; }
 
         public long PatientId { get; set; }
         public long DoctorId { get; set; }
         public long BedId { get; set; }
 
-   
+         
         public PatientDto Patient { get; set; }
 
      

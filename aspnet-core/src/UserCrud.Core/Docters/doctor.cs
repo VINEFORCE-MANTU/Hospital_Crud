@@ -1,4 +1,6 @@
 ﻿using Abp.Domain.Entities.Auditing;
+using System.ComponentModel.DataAnnotations.Schema;
+using UserCrud.Authorization.Users;
 using UserCrud.Docters;
 using UserCrud.Docters.Enums;
 namespace UserCrud.Docters
@@ -13,6 +15,10 @@ namespace UserCrud.Docters
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public bool IsAvailble { get; set; }
+        public long UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
 
     }
 }

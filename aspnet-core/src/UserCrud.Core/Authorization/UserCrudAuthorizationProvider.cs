@@ -21,6 +21,8 @@ namespace UserCrud.Authorization
             doctor.CreateChildPermission("Pages.Doctor.Edit", L("EditDoctor"));
             doctor.CreateChildPermission("Pages.Doctor.Delete", L("DeleteDoctor"));
             doctor.CreateChildPermission("Pages.Doctor.View", L("ViewDoctor"));
+            doctor.CreateChildPermission("Pages.Doctor.Profile", L("DoctorProfile"));
+            doctor.CreateChildPermission("Pages.Doctor.MyPatients", L("DoctorMyPatients"));
 
             // ---------------- PATIENT ----------------
             var patient = pages.CreateChildPermission("Pages.Patient", L("Patient"));

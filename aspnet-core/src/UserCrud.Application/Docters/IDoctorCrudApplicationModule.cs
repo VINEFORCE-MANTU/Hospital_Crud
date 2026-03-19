@@ -9,11 +9,12 @@ namespace UserCrud.Docters
 {
     public interface IDoctorCrudApplicationModule
     {
-        Task<List<DocterDto>> GetAllBedsAsync();
-        Task<DocterDto> GetBedByIdAsync(int id);
-        Task<DocterDto> CreateBedAsync(CreateDocterDto input);
-        Task<DocterDto> UpdateBedAsync(UpdateDocterDto input);
-        Task DeleteBedAsync(int id);
+        Task<List<DocterDto>> GetAllDoctorsAsync();
+        Task<DocterDto> GetDoctorByIdAsync(long id);
+        Task<DocterDto> CreateDoctorAsync(CreateDocterDto input);
+        Task<DocterDto> UpdateDoctorAsync(UpdateDocterDto input);
+        Task<DocterDto> GetMyDoctorProfile();
+        Task DeleteDoctorAsync(long id);
 
     }
 }

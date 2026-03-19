@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
                 path: '',
                 component: AppComponent,
                 children: [
+                    
                     {
                         path: 'home',
                         loadChildren: () => import('./home/home.module').then((m) => m.HomeModule),
