@@ -7,14 +7,22 @@ namespace UserCrud.Migrations
     /// <inheritdoc />
     public partial class AddUserIdToDoctor : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // ✅ Step 1: Add column first
+            migrationBuilder.AddColumn<long>(
+                name: "UserId",
+                table: "docters",
+                nullable: false,
+                defaultValue: 0L); // or nullable: true if optional
+
+            // ✅ Step 2: Create index
             migrationBuilder.CreateIndex(
                 name: "IX_docters_UserId",
                 table: "docters",
                 column: "UserId");
 
+            // ✅ Step 3: Add foreign key
             migrationBuilder.AddForeignKey(
                 name: "FK_docters_AbpUsers_UserId",
                 table: "docters",
