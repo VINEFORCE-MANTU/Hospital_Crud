@@ -1,12 +1,15 @@
 ﻿using Abp.Application.Services;
+using Abp.Authorization.Users;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Validation;
 using Abp.UI;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using UserCrud.Authorization.Users;
 using UserCrud.Docters.Dto;
 
 namespace UserCrud.Docters
@@ -14,12 +17,15 @@ namespace UserCrud.Docters
     public class DoctorCrudService : ApplicationService , IDoctorCrudApplicationModule
     {
         private readonly IRepository<doctor, long> _doctorRepository;
+        private readonly UserManager<User> _userManager;
 
-        public DoctorCrudService(IRepository<doctor, long> doctorRepository)
+        public DoctorCrudService(
+            IRepository<doctor, long> doctorRepository,
+            UserManager<User> userManager)
         {
             _doctorRepository = doctorRepository;
+            _userManager = userManager;
         }
-
         // Get all doctors
         public async Task<List<DocterDto>> GetAllDoctorsAsync()
         {
@@ -90,6 +96,16 @@ namespace UserCrud.Docters
                         new[] { "PhoneNumber" }));
                 }
 
+                // ✅ ADDED: Get user from AbpUsers
+                var user = await _userManager.FindByEmailAsync(input.Email);
+
+                if (user == null)
+                {
+                    validationErrors.Add(new ValidationResult(
+                        $"No user found with email '{input.Email}'.",
+                        new[] { "Email" }));
+                }
+
                 // If any validation errors exist, throw
                 if (validationErrors.Any())
                 {
@@ -106,7 +122,12 @@ namespace UserCrud.Docters
                     PhoneNumber = input.PhoneNumber,
                     Email = input.Email,
                     IsAvailble = input.IsAvailble,
-                    UserId = AbpSession.UserId.Value
+
+                    // ❌ OLD
+                    // UserId = AbpUser.UserId.Value
+
+                    // ✅ UPDATED
+                    UserId = user.Id
                 };
 
                 // Insert into repository
@@ -123,7 +144,7 @@ namespace UserCrud.Docters
                     PhoneNumber = createdDoctor.PhoneNumber,
                     Email = createdDoctor.Email,
                     IsAvailble = createdDoctor.IsAvailble,
-                    
+
                     UserId = createdDoctor.UserId
                 };
             }

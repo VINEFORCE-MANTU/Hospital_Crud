@@ -72,6 +72,16 @@ namespace UserCrud.PatientAdmission
             var bed = await _bedRepository.FirstOrDefaultAsync(b => b.Id == input.BedId)
                 ?? throw new UserFriendlyException($"Bed with id {input.BedId} not found.");
 
+            // ✅ IMPORTANT: check if already occupied
+            if (bed.IsOccupied)
+            {
+                throw new UserFriendlyException("This bed is already occupied.");
+            }
+
+            // ✅ MARK BED AS OCCUPIED
+            bed.IsOccupied = true;
+            await _bedRepository.UpdateAsync(bed);
+
             var admission = new patientAdmission
             {
                 AdmissionDate = input.AdmissionDate,
@@ -90,7 +100,6 @@ namespace UserCrud.PatientAdmission
 
             return MapToDto(admission);
         }
-
         public async Task<List<PatientAdmissionDto>> GetMyPatients()
         {
             var userId = AbpSession.UserId.Value;
