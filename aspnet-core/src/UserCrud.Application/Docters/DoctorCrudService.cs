@@ -11,20 +11,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserCrud.Authorization.Users;
 using UserCrud.Docters.Dto;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace UserCrud.Docters
 {
-    public class DoctorCrudService : ApplicationService , IDoctorCrudApplicationModule
+    public class DoctorCrudService : ApplicationService, IDoctorCrudApplicationModule
     {
         private readonly IRepository<doctor, long> _doctorRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
 
         public DoctorCrudService(
-            IRepository<doctor, long> doctorRepository,
-            UserManager<User> userManager)
+    IRepository<doctor, long> doctorRepository,
+    UserManager<User> userManager,
+    IConfiguration configuration)
         {
             _doctorRepository = doctorRepository;
             _userManager = userManager;
+            _configuration = configuration;
         }
         // Get all doctors
         public async Task<List<DocterDto>> GetAllDoctorsAsync()
@@ -257,5 +264,70 @@ namespace UserCrud.Docters
 
             await _doctorRepository.DeleteAsync(doctor);
         }
+
+        public async Task<DoctorAioutputDto> AskAiAsync(
+    DoctorAiInputDto input)
+        {
+            var apiKey = _configuration["Gemini:ApiKey"];
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        apiKey);
+
+                var requestBody = new
+                {
+                    model = "llama-3.3-70b-versatile",
+                    messages = new[]
+     {
+        new
+        {
+            role = "system",
+            content = "You are an AI medical assistant helping doctors. Provide professional medical information and do not replace clinical judgement."
+        },
+        new
+        {
+            role = "user",
+            content = input.Question
+        }
+    },
+                    temperature = 0.3
+                };
+
+                var json =
+                    JsonConvert.SerializeObject(requestBody);
+
+                var response = await client.PostAsync(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    new StringContent(
+                        json,
+                        Encoding.UTF8,
+                        "application/json"));
+
+                var result =
+                    await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new UserFriendlyException(result);
+                }
+
+                dynamic data =
+                    JsonConvert.DeserializeObject(result);
+
+                return new DoctorAioutputDto
+                {
+                    Response =
+                        data.choices[0]
+                        .message
+                        .content
+                        .ToString()
+                };
+            }
+        }
     }
+    
+
 }

@@ -26,6 +26,7 @@ import { CommonModule } from '@node_modules/@angular/common';
 
 @Component({
     templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css'],
     animations: [appModuleAnimation()],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,

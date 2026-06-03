@@ -1,0 +1,159 @@
+/* Dashboard Header */
+
+.alert-info {
+    background: linear-gradient(135deg, #0f8ea8, #26a6c1);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+}
+
+.alert-info h6 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Summary Cards */
+
+.small-box {
+    border-radius: 16px !important;
+    overflow: hidden;
+    transition: all .3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+}
+
+.small-box:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+}
+
+.small-box .inner h3 {
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.small-box .inner p {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.small-box .icon {
+    opacity: .25;
+    transition: .3s;
+}
+
+.small-box:hover .icon {
+    transform: scale(1.1);
+}
+
+/* Info Boxes */
+
+.info-box {
+    border-radius: 14px;
+    transition: all .3s ease;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+}
+
+.info-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,.12);
+}
+
+.info-box-icon {
+    border-radius: 10px;
+}
+
+.info-box-text {
+    font-weight: 600;
+}
+
+.info-box-number {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Card Section */
+
+.card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,.08);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #1976d2, #42a5f5);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+}
+
+.card-title {
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-tools .btn {
+    border-radius: 8px;
+}
+
+/* Tables */
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background: #f5f8fc;
+    font-weight: 700;
+    color: #2c3e50;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody tr {
+    transition: background .2s ease;
+}
+
+.table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+/* Status Colors */
+
+.text-success {
+    font-weight: 600;
+}
+
+.text-danger {
+    font-weight: 600;
+}
+
+/* Images */
+
+.table img {
+    border: 2px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+    .small-box .inner h3 {
+        font-size: 28px;
+    }
+
+    .small-box .inner p {
+        font-size: 14px;
+    }
+
+    .card-header {
+        text-align: center;
+    }
+}

@@ -11,6 +11,7 @@ import { AppSessionService } from '@shared/session/app-session.service';
 
 @Component({
     templateUrl: './login.component.html',
+    styleUrl: './login.component.css',
     animations: [accountModuleAnimation()],
     standalone: true,
     imports: [FormsModule, AbpValidationSummaryComponent, RouterLink, LocalizePipe],

@@ -42,19 +42,19 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
 
     getMenuItems(): MenuItem[] {
         return [
+            new MenuItem(this.l('HomePage'), '/app/home', 'fas fa-home'),
             new MenuItem(this.l('Doctor'), '/app/docter', 'fas fa-user-md', 'Pages.Doctor'),
-           new MenuItem(
-  this.l('DoctorProfile'),
-  '/app/docter/profile',
-  'fas fa-id-badge',
-  'Pages.Doctor.Profile'
-),
+            new MenuItem(
+                this.l('MyProfile'),
+                '/app/docter/profile',
+                'fas fa-id-badge',
+                'Pages.Doctor.Profile'
+            ),
             new MenuItem(this.l('Patient'), '/app/patient', 'fas fa-procedures', 'Pages.Patient'),
             new MenuItem(this.l('PatientAdmission'), '/app/patientAdmission', 'fas fa-hospital-user', 'Pages.PatientAdmission'),
             new MenuItem(this.l('Room'), '/app/room', 'fas fa-door-open', 'Pages.Room'),
             new MenuItem(this.l('Bed'), '/app/bed', 'fas fa-bed', 'Pages.Bed'),
             new MenuItem(this.l('About'), '/app/about', 'fas fa-info-circle'),
-            new MenuItem(this.l('HomePage'), '/app/home', 'fas fa-home'),
             new MenuItem(this.l('Roles'), '/app/roles', 'fas fa-theater-masks', 'Pages.Roles'),
             new MenuItem(this.l('Tenants'), '/app/tenants', 'fas fa-building', 'Pages.Tenants'),
             new MenuItem(this.l('Users'), '/app/users', 'fas fa-users', 'Pages.Users'),

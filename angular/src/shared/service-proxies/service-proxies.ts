@@ -897,6 +897,62 @@ export class DoctorCrudServiceServiceProxy {
         }
         return _observableOf(null as any);
     }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    askAi(body: DoctorAiInputDto | undefined): Observable<DoctorAioutputDto> {
+        let url_ = this.baseUrl + "/api/services/app/DoctorCrudService/AskAi";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAskAi(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAskAi(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DoctorAioutputDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DoctorAioutputDto>;
+        }));
+    }
+
+    protected processAskAi(response: HttpResponseBase): Observable<DoctorAioutputDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DoctorAioutputDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -4517,6 +4573,92 @@ export interface IDocterDto {
     email: string | undefined;
     userId: number;
     isAvailble: boolean;
+}
+
+export class DoctorAiInputDto implements IDoctorAiInputDto {
+    question: string | undefined;
+
+    constructor(data?: IDoctorAiInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.question = _data["question"];
+        }
+    }
+
+    static fromJS(data: any): DoctorAiInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DoctorAiInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["question"] = this.question;
+        return data;
+    }
+
+    clone(): DoctorAiInputDto {
+        const json = this.toJSON();
+        let result = new DoctorAiInputDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDoctorAiInputDto {
+    question: string | undefined;
+}
+
+export class DoctorAioutputDto implements IDoctorAioutputDto {
+    response: string | undefined;
+
+    constructor(data?: IDoctorAioutputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.response = _data["response"];
+        }
+    }
+
+    static fromJS(data: any): DoctorAioutputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DoctorAioutputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["response"] = this.response;
+        return data;
+    }
+
+    clone(): DoctorAioutputDto {
+        const json = this.toJSON();
+        let result = new DoctorAioutputDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDoctorAioutputDto {
+    response: string | undefined;
 }
 
 export enum DoctorSpecializationEnum {

@@ -1,19 +1,32 @@
 import { Component, Injector, OnInit, Renderer2 } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
 import { AppComponentBase } from '@shared/app-component-base';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { LayoutStoreService } from '@shared/layout/layout-store.service';
+
 import { HeaderComponent } from './layout/header.component';
 import { SidebarComponent } from './layout/sidebar.component';
-import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from './layout/footer.component';
 
+import { DoctorAiComponent } from './docter/doctor-ai/doctor-ai.component';
+import { CommonModule } from '@angular/common';
 @Component({
     templateUrl: './app.component.html',
     standalone: true,
-    imports: [HeaderComponent, SidebarComponent, RouterOutlet, FooterComponent],
+    imports: [
+        HeaderComponent,
+        SidebarComponent,
+        RouterOutlet,
+        FooterComponent,
+        DoctorAiComponent,
+        CommonModule
+    ],
 })
 export class AppComponent extends AppComponentBase implements OnInit {
+
     sidebarExpanded: boolean;
+    isDoctor = false;
 
     constructor(
         injector: Injector,
@@ -24,14 +37,20 @@ export class AppComponent extends AppComponentBase implements OnInit {
     }
 
     ngOnInit(): void {
+
         this.renderer.addClass(document.body, 'sidebar-mini');
 
         SignalRAspNetCoreHelper.initSignalR();
 
-        abp.event.on('abp.notifications.received', (userNotification) => {
-            abp.notifications.showUiNotifyForUserNotification(userNotification);
+        // Check Doctor Permission
+        this.isDoctor = abp.auth.isGranted('Pages.Doctor');
 
-            // Desktop notification
+        abp.event.on('abp.notifications.received', (userNotification) => {
+
+            abp.notifications.showUiNotifyForUserNotification(
+                userNotification
+            );
+
             Push.create('AbpZeroTemplate', {
                 body: userNotification.notification.data.message,
                 icon: abp.appPath + 'assets/app-logo-small.png',
@@ -49,6 +68,8 @@ export class AppComponent extends AppComponentBase implements OnInit {
     }
 
     toggleSidebar(): void {
-        this._layoutStore.setSidebarExpanded(!this.sidebarExpanded);
+        this._layoutStore.setSidebarExpanded(
+            !this.sidebarExpanded
+        );
     }
 }

@@ -118,13 +118,13 @@ onRoomChange(roomId: number): void {
 save(): void {
   const dto = new CreatePatientAdmissionDto();
 
-  dto.admissionDate = this.admission.admissionDate
-    ? moment(this.admission.admissionDate, 'YYYY-MM-DD')
-    : null;
+  // dto.admissionDate = this.admission.admissionDate
+  //   ? moment(this.admission.admissionDate, 'YYYY-MM-DD')
+  //   : null;
 
-  dto.dischargeDate = this.admission.dischargeDate
-    ? moment(this.admission.dischargeDate, 'YYYY-MM-DD')
-    : null;
+  // dto.dischargeDate = this.admission.dischargeDate
+  //   ? moment(this.admission.dischargeDate, 'YYYY-MM-DD')
+  //   : null;
 
   dto.diagnosis = this.admission.diagnosis;
   dto.status = this.admission.status;

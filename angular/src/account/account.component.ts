@@ -15,7 +15,7 @@ import { AccountFooterComponent } from './layout/account-footer.component';
         TenantChangeComponent,
         RouterOutlet,
         AccountLanguagesComponent,
-        AccountFooterComponent,
+        // AccountFooterComponent,
     ],
 })
 export class AccountComponent extends AppComponentBase implements OnInit {

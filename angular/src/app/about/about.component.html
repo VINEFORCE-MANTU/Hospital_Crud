@@ -1,4 +1,5 @@
-﻿<div [@routerTransition]>
+﻿```html
+<div [@routerTransition]>
     <section class="content-header">
         <div class="container-fluid">
             <div class="row">
@@ -15,72 +16,144 @@
                 <div class="card-body">
 
                     <p>
-                        This is a Hospital Management System built using the 
-                        <strong>ASP.NET Boilerplate (ABP)</strong> framework and 
-                        <strong>Angular</strong>. It is designed to provide a structured,
-                        scalable and maintainable solution for managing hospital operations.
+                        <strong>MediTrack HMS</strong> is a modern Hospital Management System
+                        developed using <strong>ASP.NET Boilerplate (ABP)</strong> and
+                        <strong>Angular</strong>. The system is designed to streamline hospital
+                        operations, improve healthcare management, and provide intelligent
+                        assistance through Artificial Intelligence.
                     </p>
 
-                    <h3>What is this Hospital Management System?</h3>
+                    <h3>What is MediTrack HMS?</h3>
+
                     <p>
-                        The Hospital Management System is an enterprise-style web application
-                        that helps manage doctors, patients, admissions, rooms and beds
-                        in an organized manner.
+                        MediTrack HMS is an enterprise-level healthcare management platform
+                        that helps hospitals and clinics efficiently manage doctors,
+                        patients, admissions, rooms, beds, and healthcare operations.
                     </p>
+
                     <p>
-                        It simplifies administrative tasks such as patient registration,
-                        room allocation, bed occupancy tracking and doctor management.
-                        The system ensures proper data organization using modern 
-                        software development practices.
+                        The system simplifies day-to-day administrative activities such as
+                        patient registration, doctor management, patient admissions,
+                        room allocation, and bed occupancy tracking while ensuring
+                        data consistency and operational efficiency.
                     </p>
 
                     <h3>Core Modules</h3>
+
+                    <ul>
+
+                        <li>
+                            <strong>Doctor Management</strong> –
+                            Manage doctor profiles, qualifications,
+                            specialization, and availability.
+                        </li>
+
+                        <li>
+                            <strong>Patient Management</strong> –
+                            Register and maintain patient records,
+                            personal information, and medical details.
+                        </li>
+
+                        <li>
+                            <strong>Patient Admission Management</strong> –
+                            Handle patient admissions, diagnosis,
+                            doctor assignment, approval workflows,
+                            and discharge processes.
+                        </li>
+
+                        <li>
+                            <strong>Room Management</strong> –
+                            Manage room categories including
+                            General, Private, ICU, and Special Rooms.
+                        </li>
+
+                        <li>
+                            <strong>Bed Management</strong> –
+                            Track bed availability, occupancy status,
+                            and room-wise bed allocation.
+                        </li>
+
+                        <li>
+                            <strong>Doctor AI Assistant</strong> –
+                            AI-powered medical assistant that helps doctors
+                            discuss symptoms, diseases, treatment approaches,
+                            differential diagnoses, medications, and
+                            healthcare guidelines using advanced
+                            Large Language Models (LLMs).
+                        </li>
+
+                    </ul>
+
+                    <h3>AI-Powered Doctor Assistant</h3>
+
                     <p>
-                        The system implements several core modules:
+                        MediTrack HMS includes an integrated
+                        <strong>Doctor AI Assistant</strong> which provides
+                        intelligent medical discussions and healthcare support
+                        for authorized doctors.
                     </p>
+
+                    <p>
+                        The AI Assistant can help healthcare professionals:
+                    </p>
+
+                    <ul>
+                        <li>Discuss symptoms and diseases.</li>
+                        <li>Provide medical information and guidance.</li>
+                        <li>Suggest possible differential diagnoses.</li>
+                        <li>Explain treatment approaches.</li>
+                        <li>Support clinical decision discussions.</li>
+                        <li>Provide healthcare knowledge assistance.</li>
+                    </ul>
+
+                    <p>
+                        The AI Assistant is available through a floating chatbot
+                        interface and can be accessed from anywhere in the application
+                        by authorized doctors.
+                    </p>
+
+                    <h3>System Architecture</h3>
+
+                    <p>
+                        MediTrack HMS follows a clean
+                        <strong>N-Layer Architecture</strong>
+                        to ensure scalability, maintainability,
+                        and separation of concerns.
+                    </p>
+
                     <ul>
                         <li>
-                            <strong>Doctor Management</strong> – Manage doctor details,
-                            specialization and availability.
+                            <strong>Domain Layer</strong> –
+                            Business entities and domain logic.
                         </li>
+
                         <li>
-                            <strong>Patient Management</strong> – Register and maintain
-                            patient personal and medical information.
+                            <strong>Application Layer</strong> –
+                            Application services, DTOs,
+                            validation, and business workflows.
                         </li>
+
                         <li>
-                            <strong>Patient Admission</strong> – Handle admission,
-                            diagnosis, doctor assignment and discharge.
+                            <strong>Infrastructure Layer</strong> –
+                            Repository pattern, Entity Framework Core,
+                            and database operations.
                         </li>
+
                         <li>
-                            <strong>Room Management</strong> – Maintain different room
-                            categories such as ICU, General and Private.
-                        </li>
-                        <li>
-                            <strong>Bed Management</strong> – Monitor bed availability
-                            and occupancy status in real time.
+                            <strong>Presentation Layer</strong> –
+                            Angular-based responsive user interface.
                         </li>
                     </ul>
 
-                    <h3>Architecture</h3>
                     <p>
-                        This project follows a clean <strong>N-Layer Architecture</strong>:
-                    </p>
-                    <ul>
-                        <li><strong>Domain Layer</strong> – Entities and business logic.</li>
-                        <li><strong>Application Layer</strong> – Application services and DTOs.</li>
-                        <li><strong>Infrastructure Layer</strong> – Repository and database operations.</li>
-                        <li><strong>Presentation Layer</strong> – Angular-based user interface.</li>
-                    </ul>
-
-                    <p>
-                        The system also follows <strong>Domain Driven Design (DDD)</strong> principles,
-                        ensuring separation of concerns and maintainability.
+                        The project also follows
+                        <strong>Domain Driven Design (DDD)</strong>
+                        principles to improve maintainability,
+                        flexibility, and code organization.
                     </p>
 
                     <h3>Technologies Used</h3>
-                    <p>
-                        The application is built using modern technologies including:
-                    </p>
+
                     <ul>
                         <li>ASP.NET Core</li>
                         <li>ASP.NET Boilerplate (ABP)</li>
@@ -88,22 +161,47 @@
                         <li>Entity Framework Core</li>
                         <li>SignalR</li>
                         <li>SQL Server</li>
+                        <li>REST APIs</li>
+                        <li>Groq AI API</li>
+                        <li>Llama AI Models</li>
                     </ul>
 
                     <h3>Purpose of the Project</h3>
+
                     <p>
-                        The purpose of this project is to demonstrate a real-world 
-                        enterprise application structure using ABP framework,
-                        including CRUD operations, DTO mapping, repository pattern,
-                        enum management and dynamic dashboards.
+                        The primary objective of MediTrack HMS is to demonstrate
+                        a real-world healthcare management platform using modern
+                        enterprise application architecture.
                     </p>
 
-                    <h3>Future Improvements</h3>
+                    <p>
+                        The project showcases:
+                    </p>
+
                     <ul>
-                        <li>Appointment Scheduling</li>
+                        <li>Role-Based Access Control</li>
+                        <li>CRUD Operations</li>
+                        <li>Repository Pattern</li>
+                        <li>DTO Mapping</li>
+                        <li>Patient Admission Workflows</li>
+                        <li>Room and Bed Allocation</li>
+                        <li>Doctor Profile Management</li>
+                        <li>AI-Powered Medical Assistance</li>
+                        <li>Modern Angular User Interface</li>
+                    </ul>
+
+                    <h3>Future Improvements</h3>
+
+                    <ul>
                         <li>Billing and Payment Integration</li>
-                        <li>Advanced Reporting & Analytics</li>
-                        <li>Inventory & Pharmacy Management</li>
+                        <li>Advanced Reporting and Analytics</li>
+                        <li>Inventory and Pharmacy Management</li>
+                        <li>Electronic Medical Records (EMR)</li>
+                        <li>AI Chat History Management</li>
+                        <li>Prescription Recommendation Support</li>
+                        <li>Voice-Based Doctor Assistant</li>
+                        <li>Medical Document Analysis</li>
+                       
                     </ul>
 
                 </div>
@@ -111,3 +209,4 @@
         </div>
     </section>
 </div>
+```

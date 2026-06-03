@@ -15,6 +15,6 @@ namespace UserCrud.Docters
         Task<DocterDto> UpdateDoctorAsync(UpdateDocterDto input);
         Task<DocterDto> GetMyDoctorProfile();
         Task DeleteDoctorAsync(long id);
-
+        Task<DoctorAioutputDto> AskAiAsync(DoctorAiInputDto input);
     }
 }

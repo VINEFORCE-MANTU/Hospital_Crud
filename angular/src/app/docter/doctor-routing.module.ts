@@ -4,6 +4,8 @@ import{DoctorComponent} from  './doctor.component';
 import { CreateDoctorDialogComponent } from "./create/create.component";
 import { EditDoctorDialogComponent } from "./edit/edit.component";
 import { DoctorProfileComponent } from './doctor-profile/doctor-profile.component';
+import { DoctorAiComponent } from './doctor-ai/doctor-ai.component';
+import { DoctorCrudServiceServiceProxy,DoctorAiInputDto,DoctorAioutputDto } from '@shared/service-proxies/service-proxies';
 const routes: Routes = [
   {
     path: '',
@@ -23,7 +25,11 @@ const routes: Routes = [
    {
     path: 'profile',
     component: DoctorProfileComponent
-  }
+  },
+  {
+    path: 'doctor-ai',
+    component:DoctorAiComponent,
+},
 ];
 
 @NgModule({
