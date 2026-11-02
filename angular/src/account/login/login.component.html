@@ -1,107 +1,324 @@
-﻿<div [@routerTransition] class="login-wrapper">
-    <div class="login-card">
+<div [@routerTransition] class="meditrack-page-container">
+    <div class="content-split-viewport">
 
-        <div class="login-header">
-            <div class="logo-circle">
-                <i class="fas fa-user-md"></i>
+        <!-- LEFT SECTION (HERO & CLINICAL VALUE) -->
+        <div class="left-hero-section">
+            <!-- Brand Header -->
+            <div class="brand-header-row">
+                <div class="brand-squircle-logo">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="brand-title-meta">
+                    <h2>MediTrack</h2>
+                    <span>Healthcare Management System</span>
+                </div>
             </div>
-            <h3>MediTrack</h3>
-            <p>Healthcare Management System</p>
+
+            <!-- Headline -->
+            <div class="headline-container">
+                <h1>Intelligent Healthcare &<br>Precision <span class="cyan-highlight">Clinical Care</span></h1>
+                <p class="headline-subtext">
+                    A unified digital healthcare platform connecting doctors, specialists, and patients with real-time health telemetry, smart consultation flows, and encrypted medical records.
+                </p>
+            </div>
+
+            <!-- 2x2 Feature Cards Grid -->
+            <div class="feature-grid-2x2">
+                <!-- Card 1 -->
+                <div class="feature-mini-card">
+                    <div class="card-icon-box">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="card-text-box">
+                        <h4>Doctor & Clinical Operations</h4>
+                        <p>Streamlined appointments, clinical notes, and e-prescriptions.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="feature-mini-card">
+                    <div class="card-icon-box">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="card-text-box">
+                        <h4>Unified Medical Records</h4>
+                        <p>Real-time patient history, charts, and laboratory telemetry.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="feature-mini-card">
+                    <div class="card-icon-box">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="card-text-box">
+                        <h4>HIPAA & Bank-Grade Security</h4>
+                        <p>Multi-tenant isolated data with 256-bit encryption.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="feature-mini-card">
+                    <div class="card-icon-box">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-text-box">
+                        <h4>Healthcare Analytics</h4>
+                        <p>Actionable insights for better patient outcomes and operations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Proof / Trust Row -->
+            <div class="social-proof-row">
+                <div class="avatar-stack">
+                    <span class="avatar-circle"><i class="fas fa-user-md"></i></span>
+                    <span class="avatar-circle"><i class="fas fa-user-nurse"></i></span>
+                    <span class="avatar-circle"><i class="fas fa-hospital-user"></i></span>
+                    <span class="avatar-pill-badge">+500</span>
+                </div>
+                <div class="proof-divider"></div>
+                <div class="stars-trust-box">
+                    <div class="stars-row">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="trust-caption">Trusted daily by 500+ hospital networks & clinics</span>
+                </div>
+            </div>
         </div>
 
-        <h4 class="text-center mb-4">{{ 'LogIn' | localize }}</h4>
+        <!-- RIGHT SECTION (HEADER UTILITIES & FLOATING LOGIN CARD) -->
+        <div class="right-portal-section">
 
-        <form novalidate autocomplete="off" #loginForm="ngForm" (ngSubmit)="login()">
+            <!-- Top Utility Bar: Tenant Dropdown & Language Selector -->
+            <div class="top-utility-bar">
+                <!-- Tenant Switcher Dropdown Button (Left) -->
+                <button
+                    type="button"
+                    class="tenant-pill-btn"
+                    (click)="openTenantModal()"
+                    [title]="'Change Tenant'">
+                    <i class="far fa-building"></i>
+                    <span>Current tenant: <strong>{{ currentTenancyName || 'Not selected' }}</strong></span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
 
-            <div class="form-group mb-3">
-                <div class="input-group">
-                    <input
-                        type="text"
-                        class="form-control"
-                        name="userNameOrEmailAddress"
-                        [(ngModel)]="authService.authenticateModel.userNameOrEmailAddress"
-                        [placeholder]="'UserNameOrEmail' | localize"
-                        required
-                        maxlength="256"
-                        #userNameOrEmailAddressModel="ngModel"
-                        #userNameOrEmailAddressEl />
-
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-user"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <abp-validation-summary
-                    [control]="userNameOrEmailAddressModel"
-                    [controlEl]="userNameOrEmailAddressEl">
-                </abp-validation-summary>
-            </div>
-
-            <div class="form-group mb-3">
-                <div class="input-group">
-                    <input
-                        type="password"
-                        class="form-control"
-                        name="password"
-                        [(ngModel)]="authService.authenticateModel.password"
-                        [placeholder]="'Password' | localize"
-                        required
-                        maxlength="32"
-                        #passwordModel="ngModel"
-                        #passwordEl />
-
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <abp-validation-summary
-                    [control]="passwordModel"
-                    [controlEl]="passwordEl">
-                </abp-validation-summary>
-            </div>
-
-            <div class="form-group row align-items-center">
-                <div class="col-md-8">
-                    <div class="custom-control custom-checkbox">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="rememberMe"
-                            name="rememberMe"
-                            [(ngModel)]="authService.rememberMe" />
-
-                        <label for="rememberMe" class="custom-control-label">
-                            {{ 'RememberMe' | localize }}
-                        </label>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
+                <!-- Language Selector Dropdown (Right) -->
+                <div class="lang-dropdown-wrapper" (click)="$event.stopPropagation()">
                     <button
-                        type="submit"
-                        class="btn btn-primary btn-block login-btn"
-                        [disabled]="!loginForm.form.valid || submitting">
+                        type="button"
+                        class="lang-pill-btn"
+                        (click)="toggleLanguageDropdown($event)"
+                        [title]="'Current language: ' + currentLanguageDisplayName">
+                        <i class="famfamfam-flags {{ currentLanguageIcon }}"></i>
+                        <span class="lang-pill-name">{{ currentLanguageDisplayName }}</span>
+                        <i class="fas fa-chevron-down" [class.rotated]="isLanguageDropdownOpen"></i>
+                    </button>
 
-                        <i class="fas fa-sign-in-alt mr-1"></i>
-                        {{ 'LogIn' | localize }}
+                    <!-- Dropdown Menu -->
+                    @if (isLanguageDropdownOpen) {
+                        <div class="lang-dropdown-menu">
+                            <div class="lang-dropdown-header">Select Language</div>
+                            <div class="lang-dropdown-list">
+                                @for (language of availableLanguages; track language.name) {
+                                    <button
+                                        type="button"
+                                        class="lang-menu-item"
+                                        [class.active]="language.name === currentLanguageName"
+                                        (click)="changeLanguage(language.name)">
+                                        <i class="famfamfam-flags {{ language.icon }}"></i>
+                                        <span class="item-name">{{ language.displayName }}</span>
+                                        @if (language.name === currentLanguageName) {
+                                            <i class="fas fa-check active-check"></i>
+                                        }
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Floating White Login Card -->
+            <div class="login-card-floating">
+
+                <!-- Mobile Brand Header (Visible only on mobile/tablet) -->
+                <div class="mobile-brand-box">
+                    <div class="mobile-logo-circle">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>MediTrack</h3>
+                    <p>Healthcare Management System</p>
+                </div>
+
+                <!-- Secure Sign In Badge -->
+                <div class="secure-badge-pill">
+                    <i class="fas fa-lock"></i>
+                    <span>Secure Sign In</span>
+                </div>
+
+                <!-- Card Heading -->
+                <h2 class="card-main-title">Log in to MediTrack</h2>
+                <p class="card-main-subtitle">Enter your credentials to access your clinical dashboard</p>
+
+                <!-- 3 Role Tabs (Doctors, Patients, Admins) -->
+                <div class="role-tabs-bar">
+                    <button
+                        type="button"
+                        class="role-tab"
+                        [class.active]="selectedRole === 'doctor'"
+                        (click)="selectRole('doctor')">
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Doctors</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="role-tab"
+                        [class.active]="selectedRole === 'patient'"
+                        (click)="selectRole('patient')">
+                        <i class="far fa-user"></i>
+                        <span>Patients</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        class="role-tab"
+                        [class.active]="selectedRole === 'admin'"
+                        (click)="selectRole('admin')">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admins</span>
                     </button>
                 </div>
+
+                <!-- Login Form -->
+                <form novalidate autocomplete="off" #loginForm="ngForm" (ngSubmit)="login()" class="card-form">
+
+                    <!-- Username or Email Field -->
+                    <div class="field-container">
+                        <label for="userNameOrEmail" class="field-label">
+                            User name or email <span class="required-asterisk">*</span>
+                        </label>
+                        <div class="field-input-box" [class.field-error]="userNameOrEmailAddressModel.invalid && (userNameOrEmailAddressModel.dirty || userNameOrEmailAddressModel.touched)">
+                            <i class="far fa-user field-icon"></i>
+                            <input
+                                id="userNameOrEmail"
+                                type="text"
+                                class="native-input"
+                                name="userNameOrEmailAddress"
+                                [(ngModel)]="authService.authenticateModel.userNameOrEmailAddress"
+                                placeholder="Enter your user name or email"
+                                required
+                                maxlength="256"
+                                #userNameOrEmailAddressModel="ngModel"
+                                #userNameOrEmailAddressEl />
+                        </div>
+                        <abp-validation-summary
+                            [control]="userNameOrEmailAddressModel"
+                            [controlEl]="userNameOrEmailAddressEl">
+                        </abp-validation-summary>
+                    </div>
+
+                    <!-- Password Field with Show/Hide Eye Toggle -->
+                    <div class="field-container">
+                        <label for="userPassword" class="field-label">
+                            Password <span class="required-asterisk">*</span>
+                        </label>
+                        <div class="field-input-box" [class.field-error]="passwordModel.invalid && (passwordModel.dirty || passwordModel.touched)">
+                            <i class="fas fa-lock field-icon"></i>
+                            <input
+                                id="userPassword"
+                                [type]="showPassword ? 'text' : 'password'"
+                                class="native-input"
+                                name="password"
+                                [(ngModel)]="authService.authenticateModel.password"
+                                placeholder="Enter your password"
+                                required
+                                maxlength="32"
+                                #passwordModel="ngModel"
+                                #passwordEl />
+                            <button
+                                type="button"
+                                class="eye-toggle-btn"
+                                (click)="togglePasswordVisibility()"
+                                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                                tabindex="-1">
+                                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                            </button>
+                        </div>
+                        <abp-validation-summary
+                            [control]="passwordModel"
+                            [controlEl]="passwordEl">
+                        </abp-validation-summary>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password Row -->
+                    <div class="options-inline-row">
+                        <label class="remember-label" for="rememberMe">
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                                name="rememberMe"
+                                class="styled-checkbox"
+                                [(ngModel)]="authService.rememberMe" />
+                            <span class="custom-check-box"></span>
+                            <span class="remember-text">Remember me</span>
+                        </label>
+
+                        <a href="javascript:;" (click)="forgotPassword()" class="forgot-link">
+                            Forgot your password?
+                        </a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        class="submit-action-btn"
+                        [disabled]="!loginForm.form.valid || submitting">
+                        @if (!submitting) {
+                            <span class="btn-text-content">
+                                <span>Log in</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                        } @else {
+                            <span class="btn-text-content">
+                                <i class="fas fa-circle-notch fa-spin"></i>
+                                <span>Signing in...</span>
+                            </span>
+                        }
+                    </button>
+                </form>
+
+                <!-- Self Registration Link (If allowed by tenant) -->
+                @if (isSelfRegistrationAllowed) {
+                    <div class="register-action-prompt">
+                        <span>Don't have an account?</span>
+                        <a [routerLink]="['../register']" class="register-link-highlight">
+                            Register here
+                        </a>
+                    </div>
+                }
+
+                <!-- SSL & HIPAA Compliance Badge -->
+                <div class="hipaa-secure-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>256-Bit SSL Encrypted & HIPAA Compliant</span>
+                </div>
+
+                <!-- Footer Language Flags (Default ABP) -->
+                <div class="card-footer-languages">
+                    <account-languages></account-languages>
+                </div>
+
+                <!-- Copyright Line -->
+                <p class="copyright-meta">
+                    &copy; 2026 MediTrack Health Systems. All clinical rights reserved.
+                </p>
             </div>
-        </form>
-
-        @if (isSelfRegistrationAllowed) {
-            <p class="register-link mt-3">
-                <a [routerLink]="['../register']">
-                    <i class="fa fa-plus-circle"></i>
-                    {{ 'Register' | localize }}
-                </a>
-            </p>
-        }
-
+        </div>
     </div>
 </div>
