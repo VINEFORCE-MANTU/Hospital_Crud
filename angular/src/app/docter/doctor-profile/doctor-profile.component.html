@@ -5,174 +5,394 @@
     <div class="container-fluid">
       <div class="row align-items-center">
         <div class="col-6">
-          <h1 class="fw-bold text-primary">Doctor Profile</h1>
+          <h1 class="fw-bold text-primary">
+            <span *ngIf="userRoleType === 'Admin'">Administrator Profile</span>
+            <span *ngIf="userRoleType === 'Doctor'">Doctor Profile</span>
+            <span *ngIf="userRoleType === 'Patient'">Patient Profile</span>
+            <span *ngIf="userRoleType === 'Receptionist'">Receptionist Profile</span>
+            <span *ngIf="userRoleType === 'User'">My Profile</span>
+          </h1>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ===== Loading Spinner ===== -->
+  <div *ngIf="loading" class="text-center py-5">
+    <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
+    <p class="mt-3 text-muted">Loading your profile information...</p>
+  </div>
+
   <!-- ===== Content ===== -->
-  <section class="content px-2 pb-5">
+  <section class="content px-2 pb-5" *ngIf="!loading">
     <div class="container-fluid">
 
-      <!-- Doctor Info -->
-      <div class="card mb-4 shadow-lg border-0 rounded-4 doctor-card">
+      <!-- ========================================== -->
+      <!-- 1. ADMIN PROFILE VIEW                      -->
+      <!-- ========================================== -->
+      <div *ngIf="userRoleType === 'Admin'">
+        <div class="card mb-4 shadow-lg border-0 rounded-4">
+          <div class="card-header bg-gradient-danger text-white rounded-top-4 d-flex align-items-center justify-content-between">
+            <h3 class="card-title mb-0">
+              <i class="fas fa-user-shield me-2"></i> System Administrator
+            </h3>
+            <span class="badge bg-light text-danger fw-bold">Admin Privileges</span>
+          </div>
 
-        <div class="card-header bg-gradient-primary text-white rounded-top-4 d-flex align-items-center justify-content-between">
-          <h3 class="card-title mb-0">
-            <i class="fas fa-user-md me-2"></i> Doctor Information
-          </h3>
-        </div>
-
-        <div class="card-body" *ngIf="!loading; else loadingTemplate">
-
-          <div *ngIf="doctor">
-
+          <div class="card-body">
             <div class="row align-items-center">
-
-              <!-- Avatar -->
               <div class="col-md-3 text-center mb-3">
-                <div class="doctor-avatar">
-                  <i class="fas fa-user-md"></i>
+                <div class="profile-avatar bg-danger text-white">
+                  <i class="fas fa-user-shield fa-3x"></i>
                 </div>
-
-                <h5 class="mt-3 fw-semibold">{{ doctor.fullName }}</h5>
-
-                <span class="badge bg-info mt-1">
-                  <i class="fas fa-stethoscope me-1"></i>
-                  {{ doctor.specializationName }}
+                <h5 class="mt-3 fw-semibold">{{ currentUser?.fullName || currentUser?.name }}</h5>
+                <span class="badge bg-danger mt-1">
+                  <i class="fas fa-shield-alt me-1"></i> Administrator
                 </span>
               </div>
 
-              <!-- Details -->
               <div class="col-md-9">
-
                 <div class="row mb-3">
-                  <div class="col-md-4 text-muted">
-                    <i class="fas fa-id-badge me-1"></i> Doctor Code
-                  </div>
-                  <div class="col-md-8 fw-bold">{{ doctor.docterCode }}</div>
+                  <div class="col-md-4 text-muted"><i class="fas fa-user me-1"></i> Username</div>
+                  <div class="col-md-8 fw-bold">{{ currentUser?.userName }}</div>
                 </div>
 
                 <div class="row mb-3">
-                  <div class="col-md-4 text-muted">
-                    <i class="fas fa-graduation-cap me-1"></i> Qualification
-                  </div>
-                  <div class="col-md-8 fw-bold">{{ doctor.qualification }}</div>
+                  <div class="col-md-4 text-muted"><i class="fas fa-envelope me-1"></i> Email</div>
+                  <div class="col-md-8 fw-bold text-primary">{{ currentUser?.emailAddress }}</div>
                 </div>
 
                 <div class="row mb-3">
-                  <div class="col-md-4 text-muted">
-                    <i class="fas fa-envelope me-1"></i> Email
-                  </div>
-                  <div class="col-md-8 fw-bold text-primary">
-                    {{ doctor.email }}
+                  <div class="col-md-4 text-muted"><i class="fas fa-users-cog me-1"></i> Assigned Roles</div>
+                  <div class="col-md-8">
+                    <span class="badge bg-primary me-1" *ngFor="let role of currentUser?.roleNames">{{ role }}</span>
                   </div>
                 </div>
 
                 <div class="row mb-3">
-                  <div class="col-md-4 text-muted">
-                    <i class="fas fa-phone me-1"></i> Phone
-                  </div>
-                  <div class="col-md-8 fw-bold text-success">
-                    {{ doctor.phoneNumber }}
-                  </div>
+                  <div class="col-md-4 text-muted"><i class="fas fa-clock me-1"></i> Account Created</div>
+                  <div class="col-md-8 fw-bold">{{ currentUser?.creationTime | date:'mediumDate' }}</div>
                 </div>
-
               </div>
-
             </div>
-
           </div>
+        </div>
 
+        <!-- Admin Quick Actions / Shortcuts -->
+        <div class="row">
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-user-md fa-2x text-primary mb-2"></i>
+              <h6 class="fw-bold">Manage Doctors</h6>
+              <a routerLink="/app/docter" class="btn btn-outline-primary btn-sm mt-2">View Doctors</a>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-procedures fa-2x text-success mb-2"></i>
+              <h6 class="fw-bold">Manage Patients</h6>
+              <a routerLink="/app/patient" class="btn btn-outline-success btn-sm mt-2">View Patients</a>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-hospital-user fa-2x text-warning mb-2"></i>
+              <h6 class="fw-bold">Admissions</h6>
+              <a routerLink="/app/patientAdmission" class="btn btn-outline-warning btn-sm mt-2">View Admissions</a>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-users fa-2x text-info mb-2"></i>
+              <h6 class="fw-bold">System Users</h6>
+              <a routerLink="/app/users" class="btn btn-outline-info btn-sm mt-2">Manage Users</a>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Loading -->
-      <ng-template #loadingTemplate>
-        <div class="card-body text-center py-4">
-          <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
-          <p class="mt-2 text-muted">Loading doctor details...</p>
-        </div>
-      </ng-template>
 
-      <!-- Patients Table -->
-      <div class="card table-wrapper">
+      <!-- ========================================== -->
+      <!-- 2. DOCTOR PROFILE VIEW                     -->
+      <!-- ========================================== -->
+      <div *ngIf="userRoleType === 'Doctor'">
+        <div class="card mb-4 shadow-lg border-0 rounded-4 doctor-card">
+          <div class="card-header bg-gradient-primary text-white rounded-top-4 d-flex align-items-center justify-content-between">
+            <h3 class="card-title mb-0">
+              <i class="fas fa-user-md me-2"></i> Doctor Information
+            </h3>
+            <span class="badge bg-light text-primary fw-bold" *ngIf="doctor?.isAvailble">Available</span>
+            <span class="badge bg-secondary" *ngIf="doctor && !doctor.isAvailble">Unavailable</span>
+          </div>
 
-        <div class="card-header d-flex align-items-center justify-content-between">
-          <h3 class="card-title mb-0">
-            <i class="fas fa-procedures me-2"></i> My Patients
-          </h3>
-        </div>
+          <div class="card-body">
+            <div *ngIf="doctor; else noDoctorLinked">
+              <div class="row align-items-center">
+                <!-- Avatar -->
+                <div class="col-md-3 text-center mb-3">
+                  <div class="doctor-avatar">
+                    <i class="fas fa-user-md"></i>
+                  </div>
+                  <h5 class="mt-3 fw-semibold">{{ doctor.fullName }}</h5>
+                  <span class="badge bg-info mt-1">
+                    <i class="fas fa-stethoscope me-1"></i>
+                    {{ doctor.specializationName || 'Specialist' }}
+                  </span>
+                </div>
 
-        <div class="card-body">
-          <div class="table-responsive">
+                <!-- Details -->
+                <div class="col-md-9">
+                  <div class="row mb-3">
+                    <div class="col-md-4 text-muted"><i class="fas fa-id-badge me-1"></i> Doctor Code</div>
+                    <div class="col-md-8 fw-bold">{{ doctor.docterCode }}</div>
+                  </div>
 
-            <table class="table table-striped table-hover table-bordered text-center"
-                   *ngIf="patients?.length > 0">
+                  <div class="row mb-3">
+                    <div class="col-md-4 text-muted"><i class="fas fa-graduation-cap me-1"></i> Qualification</div>
+                    <div class="col-md-8 fw-bold">{{ doctor.qualification }}</div>
+                  </div>
 
-              <thead>
-                <tr>
-                  <th>Patient Name</th>
-                  <th>Room</th>
-                  <th>Bed</th>
-                  <th>Admission Date</th>
-                  <th>Diagnosis</th>
-                  <th>Status</th>
-                  <th>Approval</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
+                  <div class="row mb-3">
+                    <div class="col-md-4 text-muted"><i class="fas fa-envelope me-1"></i> Email</div>
+                    <div class="col-md-8 fw-bold text-primary">{{ doctor.email }}</div>
+                  </div>
 
-              <tbody>
-                <tr *ngFor="let admission of patients">
-
-                  <td class="fw-semibold">
-                    {{ admission.patient?.firstName }} {{ admission.patient?.lastName }}
-                  </td>
-
-                  <td>{{ admission.bed?.room?.roomNumber }}</td>
-                  <td>{{ admission.bed?.bedNumber }}</td>
-                  <td>{{ admission.admissionDate | date:'dd-MM-yyyy' }}</td>
-                  <td>{{ admission.diagnosis }}</td>
-                  <td>{{ admission.status }}</td>
-
-                  <td>
-                    <span class="badge bg-warning" *ngIf="admission.approvalStatus === 'Pending'">Pending</span>
-                    <span class="badge bg-success" *ngIf="admission.approvalStatus === 'Approved'">Approved</span>
-                    <span class="badge bg-danger" *ngIf="admission.approvalStatus === 'Rejected'">Rejected</span>
-                  </td>
-
-                  <td>
-                    <div *ngIf="admission.approvalStatus === 'Pending'">
-                      <button class="btn btn-success btn-sm me-2"
-                              (click)="approveAdmission(admission.id)">
-                         Approve
-                      </button>
-
-                      <button class="btn btn-danger btn-sm"
-                              (click)="rejectAdmission(admission.id)">
-                        Reject
-                      </button>
-                    </div>
-
-                    <div *ngIf="admission.approvalStatus !== 'Pending'">
-                      <span class="text-muted">Completed</span>
-                    </div>
-                  </td>
-
-                </tr>
-              </tbody>
-
-            </table>
-
-            <div class="text-center text-muted mt-3" *ngIf="patients?.length === 0">
-              <i class="fas fa-info-circle me-1"></i> No Patients Assigned
+                  <div class="row mb-3">
+                    <div class="col-md-4 text-muted"><i class="fas fa-phone me-1"></i> Phone</div>
+                    <div class="col-md-8 fw-bold text-success">{{ doctor.phoneNumber }}</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
+            <ng-template #noDoctorLinked>
+              <div class="alert alert-info mb-0">
+                <i class="fas fa-info-circle me-1"></i>
+                No specific doctor record has been linked to this account yet. Please contact the administrator to assign your Doctor profile.
+              </div>
+            </ng-template>
           </div>
         </div>
 
+        <!-- Patients Table -->
+        <div class="card table-wrapper" *ngIf="doctor">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <h3 class="card-title mb-0">
+              <i class="fas fa-procedures me-2"></i> My Patients
+            </h3>
+            <span class="badge bg-primary">{{ patients?.length || 0 }} Patients</span>
+          </div>
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-bordered text-center" *ngIf="patients?.length > 0">
+                <thead>
+                  <tr>
+                    <th>Patient Name</th>
+                    <th>Room</th>
+                    <th>Bed</th>
+                    <th>Admission Date</th>
+                    <th>Diagnosis</th>
+                    <th>Status</th>
+                    <th>Approval</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let admission of patients">
+                    <td class="fw-semibold">
+                      {{ admission.patient?.firstName }} {{ admission.patient?.lastName }}
+                    </td>
+                    <td>{{ admission.bed?.room?.roomNumber }}</td>
+                    <td>{{ admission.bed?.bedNumber }}</td>
+                    <td>{{ admission.admissionDate | date:'dd-MM-yyyy' }}</td>
+                    <td>{{ admission.diagnosis }}</td>
+                    <td>{{ admission.status }}</td>
+                    <td>
+                      <span class="badge bg-warning" *ngIf="admission.approvalStatus === 'Pending'">Pending</span>
+                      <span class="badge bg-success" *ngIf="admission.approvalStatus === 'Approved'">Approved</span>
+                      <span class="badge bg-danger" *ngIf="admission.approvalStatus === 'Rejected'">Rejected</span>
+                    </td>
+                    <td>
+                      <div *ngIf="admission.approvalStatus === 'Pending'">
+                        <button class="btn btn-success btn-sm me-2" (click)="approveAdmission(admission.id)">Approve</button>
+                        <button class="btn btn-danger btn-sm" (click)="rejectAdmission(admission.id)">Reject</button>
+                      </div>
+                      <div *ngIf="admission.approvalStatus !== 'Pending'">
+                        <span class="text-muted">Completed</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="text-center text-muted mt-3 py-3" *ngIf="patients?.length === 0">
+                <i class="fas fa-info-circle me-1"></i> No Patients Assigned
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- 3. PATIENT PROFILE VIEW                    -->
+      <!-- ========================================== -->
+      <div *ngIf="userRoleType === 'Patient'">
+        <div class="card mb-4 shadow-lg border-0 rounded-4">
+          <div class="card-header bg-gradient-success text-white rounded-top-4 d-flex align-items-center justify-content-between">
+            <h3 class="card-title mb-0">
+              <i class="fas fa-user me-2"></i> Patient Profile
+            </h3>
+            <span class="badge bg-light text-success fw-bold">Patient Member</span>
+          </div>
+
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-3 text-center mb-3">
+                <div class="profile-avatar bg-success text-white">
+                  <i class="fas fa-user-injured fa-3x"></i>
+                </div>
+                <h5 class="mt-3 fw-semibold">
+                  {{ patientProfile ? (patientProfile.firstName + ' ' + patientProfile.lastName) : (currentUser?.fullName || currentUser?.name) }}
+                </h5>
+                <span class="badge bg-success mt-1">Patient</span>
+              </div>
+
+              <div class="col-md-9">
+                <div class="row mb-3" *ngIf="patientProfile?.patientCode">
+                  <div class="col-md-4 text-muted"><i class="fas fa-barcode me-1"></i> Patient Code</div>
+                  <div class="col-md-8 fw-bold">{{ patientProfile?.patientCode }}</div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-4 text-muted"><i class="fas fa-envelope me-1"></i> Email</div>
+                  <div class="col-md-8 fw-bold text-primary">{{ patientProfile?.email || currentUser?.emailAddress }}</div>
+                </div>
+
+                <div class="row mb-3" *ngIf="patientProfile?.phoneNumber">
+                  <div class="col-md-4 text-muted"><i class="fas fa-phone me-1"></i> Phone</div>
+                  <div class="col-md-8 fw-bold text-success">{{ patientProfile?.phoneNumber }}</div>
+                </div>
+
+                <div class="row mb-3" *ngIf="patientProfile?.dateOfBirth">
+                  <div class="col-md-4 text-muted"><i class="fas fa-birthday-cake me-1"></i> Date of Birth</div>
+                  <div class="col-md-8 fw-bold">{{ patientProfile?.dateOfBirth | date:'mediumDate' }}</div>
+                </div>
+
+                <div class="row mb-3" *ngIf="patientProfile?.address">
+                  <div class="col-md-4 text-muted"><i class="fas fa-map-marker-alt me-1"></i> Address</div>
+                  <div class="col-md-8 fw-bold">{{ patientProfile?.address }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- 4. RECEPTIONIST PROFILE VIEW               -->
+      <!-- ========================================== -->
+      <div *ngIf="userRoleType === 'Receptionist'">
+        <div class="card mb-4 shadow-lg border-0 rounded-4">
+          <div class="card-header bg-gradient-info text-white rounded-top-4 d-flex align-items-center justify-content-between">
+            <h3 class="card-title mb-0">
+              <i class="fas fa-concierge-bell me-2"></i> Receptionist Profile
+            </h3>
+            <span class="badge bg-light text-info fw-bold">Front Desk Staff</span>
+          </div>
+
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-3 text-center mb-3">
+                <div class="profile-avatar bg-info text-white">
+                  <i class="fas fa-concierge-bell fa-3x"></i>
+                </div>
+                <h5 class="mt-3 fw-semibold">{{ currentUser?.fullName || currentUser?.name }}</h5>
+                <span class="badge bg-info mt-1">Receptionist Desk</span>
+              </div>
+
+              <div class="col-md-9">
+                <div class="row mb-3">
+                  <div class="col-md-4 text-muted"><i class="fas fa-user me-1"></i> Username</div>
+                  <div class="col-md-8 fw-bold">{{ currentUser?.userName }}</div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-4 text-muted"><i class="fas fa-envelope me-1"></i> Email</div>
+                  <div class="col-md-8 fw-bold text-primary">{{ currentUser?.emailAddress }}</div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-4 text-muted"><i class="fas fa-id-badge me-1"></i> Role</div>
+                  <div class="col-md-8">
+                    <span class="badge bg-info me-1" *ngFor="let role of currentUser?.roleNames">{{ role }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Receptionist Quick Shortcuts -->
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-user-plus fa-2x text-primary mb-2"></i>
+              <h6 class="fw-bold">Patient Registration</h6>
+              <a routerLink="/app/patient" class="btn btn-outline-primary btn-sm mt-2">Register Patient</a>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-procedures fa-2x text-success mb-2"></i>
+              <h6 class="fw-bold">Admissions & Discharges</h6>
+              <a routerLink="/app/patientAdmission" class="btn btn-outline-success btn-sm mt-2">Manage Admissions</a>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="card text-center border-0 shadow-sm p-3 h-100 hover-card">
+              <i class="fas fa-bed fa-2x text-warning mb-2"></i>
+              <h6 class="fw-bold">Bed Availability</h6>
+              <a routerLink="/app/bed" class="btn btn-outline-warning btn-sm mt-2">Check Beds</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- 5. DEFAULT / GENERIC USER PROFILE VIEW     -->
+      <!-- ========================================== -->
+      <div *ngIf="userRoleType === 'User'">
+        <div class="card mb-4 shadow-lg border-0 rounded-4">
+          <div class="card-header bg-gradient-secondary text-white rounded-top-4">
+            <h3 class="card-title mb-0">
+              <i class="fas fa-user-circle me-2"></i> User Profile
+            </h3>
+          </div>
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-3 text-center mb-3">
+                <div class="profile-avatar bg-secondary text-white">
+                  <i class="fas fa-user fa-3x"></i>
+                </div>
+                <h5 class="mt-3 fw-semibold">{{ currentUser?.fullName || currentUser?.name }}</h5>
+              </div>
+              <div class="col-md-9">
+                <div class="row mb-3">
+                  <div class="col-md-4 text-muted">Username</div>
+                  <div class="col-md-8 fw-bold">{{ currentUser?.userName }}</div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-4 text-muted">Email</div>
+                  <div class="col-md-8 fw-bold text-primary">{{ currentUser?.emailAddress }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>

@@ -20,7 +20,6 @@
                             "src/polyfills.ts"
                         ],
                         "assets": [
-                            "public",
                             {
                                 "glob": "**/*",
                                 "input": "public",

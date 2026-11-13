@@ -1,4 +1,4 @@
-﻿using Abp.Application.Services;
+using Abp.Application.Services;
 using Abp.Authorization.Users;
 using Abp.Domain.Repositories;
 using Abp.Runtime.Validation;
@@ -246,9 +246,18 @@ namespace UserCrud.Docters
         public async Task<DocterDto> GetMyDoctorProfile()
         {
             var userId = AbpSession.UserId;
+            if (!userId.HasValue)
+            {
+                return null;
+            }
 
             var doctor = await _doctorRepository
-                .FirstOrDefaultAsync(x => x.UserId == userId);
+                .FirstOrDefaultAsync(x => x.UserId == userId.Value);
+
+            if (doctor == null)
+            {
+                return null;
+            }
 
             return ObjectMapper.Map<DocterDto>(doctor);
         }
