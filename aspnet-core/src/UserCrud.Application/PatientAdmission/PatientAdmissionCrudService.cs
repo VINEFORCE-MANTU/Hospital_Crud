@@ -1,4 +1,4 @@
-﻿using Abp.Application.Services;
+using Abp.Application.Services;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
 using Abp.UI;
@@ -102,10 +102,19 @@ namespace UserCrud.PatientAdmission
         }
         public async Task<List<PatientAdmissionDto>> GetMyPatients()
         {
-            var userId = AbpSession.UserId.Value;
+            var userId = AbpSession.UserId;
+            if (!userId.HasValue)
+            {
+                return new List<PatientAdmissionDto>();
+            }
 
             var doctor = await _doctorRepository
-                .FirstOrDefaultAsync(x => x.UserId == userId);
+                .FirstOrDefaultAsync(x => x.UserId == userId.Value);
+
+            if (doctor == null)
+            {
+                return new List<PatientAdmissionDto>();
+            }
 
             var admissions = await _patientAdmissionRepository
                 .GetAllIncluding(
